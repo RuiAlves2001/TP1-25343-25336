@@ -1,31 +1,21 @@
 import 'phaser';
+import { Turret } from './turret';
+import { Player } from './player';
+import { MainScene } from './scenes/main_scene';
 
 var config = {
   type: Phaser.AUTO,
-  width: 860,
-  height: 540,
+  width: 1920/2,
+  height: 1080/2,
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 }
     }
   },
-  scene: {
-    preload: preload,
-    create: create,
-    update: update
-  }
+  scene: [MainScene]
 };
 
 // -- Begin of variable declaration --
 let game = new Phaser.Game(config);
 // -- End of variable declaration --
-
-function preload() {
-}
-
-function create() {
-}
-
-function update() {
-}

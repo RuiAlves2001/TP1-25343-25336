@@ -1,22 +1,46 @@
 // Player class
+import { Physics } from 'phaser';
 
-class Player extends Phaser.Physics.Arcade.Srite {
-  cursors = this.input.keyboard.createCursorKeys();
+export class Player extends Physics.Arcade.Sprite {
   constructor(scene, x, y) {
-    super(scene, x, y, 'Texture');
+    super(scene, x, y, 'player');
+    this.cursors = scene.input.keyboard.createCursorKeys();
+    scene.physics.world.enableBody(this);
     scene.add.existing(this);
+    this.acc = 200;
+  }
+
+  preload() {
+  }
+
+  update() {
+    this.setVelocity(0,0);
+    if (this.cursors.up.isDown) {
+      console.log("up")
+      this.movement_up();
+    }
+    if (this.cursors.left.isDown) {
+      this.movement_left()
+    }
+    if (this.cursors.down.isDown) {
+      console.log("down")
+      this.movement_down()
+    }
+    if (this.cursors.right.isDown) {
+      this.movement_right()
+    }
   }
 
   movement_left() {
-    this.body.velocity.x -= acc;
+    this.setVelocityX(-this.acc);
   };
   movement_right() {
-    this.body.velocity.x += acc;
+    this.setVelocityX(this.acc);
   };
   movement_up() {
-    this.body.velocity.y -= acc;
+    this.setVelocityY(-this.acc);
   };
   movement_down() {
-    this.body.velocity.y += acc;
+    this.setVelocityY(this.acc);
   };
 }
