@@ -1,10 +1,22 @@
 // Player class
 import { Physics } from 'phaser';
 
+let KEYS = {
+  UP: Phaser.Input.Keyboard.KeyCodes.W,
+  DOWN: Phaser.Input.Keyboard.KeyCodes.S,
+  LEFT: Phaser.Input.Keyboard.KeyCodes.A,
+  RIGHT: Phaser.Input.Keyboard.KeyCodes.D
+}
+
 export class Player extends Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, 'player');
     this.cursors = scene.input.keyboard.createCursorKeys();
+    
+    Object.keys(KEYS).map((key) => {
+      KEYS[key] = scene.input.keyboard.addKey(KEYS[key])
+    })
+
     scene.physics.world.enableBody(this);
     scene.add.existing(this);
     this.acc = 200;
@@ -15,18 +27,17 @@ export class Player extends Physics.Arcade.Sprite {
 
   update() {
     this.setVelocity(0,0);
-    if (this.cursors.up.isDown) {
-      console.log("up")
+    if (KEYS.UP.isDown) {
       this.movement_up();
     }
-    if (this.cursors.left.isDown) {
+    if (KEYS.LEFT.isDown) {
       this.movement_left()
     }
-    if (this.cursors.down.isDown) {
+    if (KEYS.DOWN.isDown) {
       console.log("down")
       this.movement_down()
     }
-    if (this.cursors.right.isDown) {
+    if (KEYS.RIGHT.isDown) {
       this.movement_right()
     }
   }
