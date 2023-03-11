@@ -1,9 +1,12 @@
-import { Physics } from "phaser";
+import { GameObjects, Physics } from "phaser";
 
 export class Enemie extends Physics.Arcade.Sprite {
-    constructor (scene, x, y) {
-        super(scene, x, y);
-
-        this.graphics = scene.add.sprite(x, y, "enemie_basic");
-    }
+  constructor(scene, x, y, health, speed, target) {
+    super(scene, x, y, "");
+    scene.physics.world.enableBody(this);
+    this.health = health;
+    this.target = target;
+    this.speed = speed;
+    scene.add.existing(this);
+  }
 }

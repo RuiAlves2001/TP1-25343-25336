@@ -5,8 +5,8 @@ import { MainScene } from './scenes/main_scene';
 
 var config = {
   type: Phaser.AUTO,
-  width: 1920/1.2,
-  height: 1080/1.2,
+  width: 1600,
+  height: 900,
   physics: {
     default: 'arcade',
     arcade: {
