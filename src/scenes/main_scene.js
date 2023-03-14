@@ -17,6 +17,8 @@ export class MainScene extends Phaser.Scene {
     this.load.image('player', 'assets/player.png')
     this.load.image('tile_grass', 'assets/grass.png')
     this.load.image('castle', 'assets/castle.png')
+    this.load.image('bullet', 'assets/bullet.png')
+    this.load.image('smoke', 'assets/smoke.png')
   }
 
   create() {
@@ -24,7 +26,7 @@ export class MainScene extends Phaser.Scene {
     this.tiles = this.map.addTilesetImage('tile_grass');
     this.layer = this.map.createBlankLayer('layer', this.tiles);
     this.layer.randomize(0, 0, 128, 128, [0, 0]); // Wall above the water
-    this.turrets = [new Turret(this, 100, 100, 400, true)]
+    this.turrets = this.physics.add.group()
     this.player = new Player(this, 150, 150);
     this.camera = this.cameras.main;
     this.castle = this.physics.add.sprite(800, 400, "castle");
@@ -39,18 +41,38 @@ export class MainScene extends Phaser.Scene {
     this.enemies = []
 
     this.input.on('pointerdown', (pointer) => {
-      let t = new Turret(this, pointer.x, pointer.y, 300, true);
-      this.turrets.push(t);
+      let t = new Turret(this, pointer.x, pointer.y, 300, false);
+      this.turrets.add(t);
     })
+    
+    this.bullets = this.add.group()
+    this.enemies_amount = 0
+    this.data.set('enemies', this.enemies_amount.toString());
+    let scene_info = this.add.text(50, this.window.height - 50, '', { font: '20px Courier', fill: '#00ff00'}) 
+    scene_info.setText([
+      'Nº Enemies: ' + this.data.get('enemies')
+    ])
   }
+
 
   update() {
     this.player.update();
     // the towers update is not doing anything at this point
-    this.turrets.map((turret) => {
-      turret.update();
-      turret.look_at_target(this.enemies);
+
+    this.turrets.children.each((turret, i) => {
+      if (turret.isDestroyed) {
+        this.turrets.killAndHide(turret)
+        turret.active = false
+        turret.removeAllListeners()
+        turret.visible = false
+        this.turrets.remove(turret, true, true)
+        console.log(this.turrets.children)
+      } else {
+        turret.look_at_target(this.enemies);
+        turret.update();
+      }
     })
+
     this.graphics.clear();
     this.graphics.fillStyle(0x00ff00, 0.5);
 
@@ -60,6 +82,7 @@ export class MainScene extends Phaser.Scene {
 
     this.enemie_creation_timer++
     if (this.enemie_creation_timer > ENEMIE_SPAWN_TIMER) {
+      this.enemies_amount++
       let position = {};
 
       switch (Math.ceil(Math.random() * 4)) {
@@ -95,6 +118,7 @@ export class MainScene extends Phaser.Scene {
 
         this.physics.world.removeCollider(collider);
         enemie.destroy();
+        this.enemies_amount--;
         
     }, null, this);
     }

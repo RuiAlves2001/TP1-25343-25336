@@ -5,8 +5,8 @@ export class Turret extends Physics.Arcade.Sprite {
   constructor(scene, x, y, range, debug) {
     super(scene, x, y);
     this.debug = debug;
-    this.sprite_head = scene.add.sprite(x, y, 'turret_head');
-    this.sprite_body = scene.add.sprite(x, y, 'turret_body');
+    this.sprite_head = scene.physics.add.sprite(x, y, 'turret_head');
+    this.sprite_body = scene.physics.add.sprite(x, y, 'turret_body');
     this.sprite_head.setDepth(1);
     this.sprite_body.setDepth(0);
     const color = new Phaser.Display.Color();
@@ -16,51 +16,90 @@ export class Turret extends Physics.Arcade.Sprite {
     //    this.area_of_attack = new Phaser.Geom.Circle(x, y, range);
     this.range = range
     // this.aim_line = scene.add.line(x, y, 0, 0, 140, 0, 0xff33ffff);
-    scene.add.existing(this);
     scene.physics.add.existing(this);
     this.bullets = []
 
-    const text = this.scene.add.text(this.x + 32, this.y, '', { font: '16px Arial', fill: '#00ff00' });
+    this.current_selected_enemie;
+    this.energy = 5
+    this.text = this.scene.add.text(this.x + 32, this.y, '', { font: '16px Arial', fill: '#00ff00' });
     this.setData('name', 'Turret');
-    this.setData('energy', 50);
-    text.setText([
+    this.setData('energy', this.energy);
+    this.text.setText([
       this.getData('name'),
       this.getData('energy')
     ])
 
-    this.on('setData', function(gameObject, key, value) {
-      text.setText([
-        this.getData('name'),
-        'energy: ' + this.getData('energy')
-      ])
-    })
+    this.bullets = [];
+    this.bullet_timer = 80;
+    this.isDestroyed = false;
+  }
+
+  decrease_energy() {
+    this.energy -= 1;
+    this.setData('energy', this.energy)
+    if (this.energy < 1) {
+      this._destroy()
+    }
+  }
+
+  _destroy() {
+    this.isDestroyed = true
+    this.sprite_head.visible = false;
+    this.sprite_body.visible = false;
+    this.text.visible = false;
   }
 
   update() {
-    let bullets = this.bullets.filter((bullet) => bullet.isAlive());
-    bullets.forEach((bullet) => {
-      bullet.fire;
-      bullet.update;
-    })
+   
+      this.bullet_timer -= 1;
+      if (this.bullet_timer < 0 && this.current_selected_enemie != null) {
+        console.log("SHOOT")
+        this.shoot()
+        this.bullet_timer += 100
+      }
+    
+  }
+
+  shoot() {
+    let bullet = this.scene.physics.add.sprite(this.x, this.y, 'bullet');
+    this.scene.physics.world.enableBody(bullet);
+    this.scene.physics.moveTo(bullet, this.current_selected_enemie.x, this.current_selected_enemie.y, 1000);
+    this.decrease_energy();
+    let particles = this.scene.add.particles('smoke');
+
+    let emitter = particles.createEmitter({
+      speed: 50,
+      scale: { start: 0.2, end: 0 },
+      blendMode: 'MULTIPLY'
+    });
+
+    emitter.startFollow(bullet)
+    console.log(this.energy)
+    this.text.setText([
+      this.getData('name'),
+      'energy: ' + this.getData('energy')
+    ])
   }
 
   look_at_target(targets) {
 
     if (targets.length === 0) return;
-    let target; 
+    let target;
     let targets_distance = targets.map(t => {
-     // Formula to calculate de distance between 2 points √((x2 – x1)² + (y2 – y1)²)
-      return [t, Math.sqrt(Math.pow(t.x -  this.x, 2) + Math.pow(t.y - this.y, 2)) ]
+      // Formula to calculate de distance between 2 points √((x2 – x1)² + (y2 – y1)²)
+      return [t, Math.sqrt(Math.pow(t.x - this.x, 2) + Math.pow(t.y - this.y, 2))]
     });
-    
+
     targets_distance.sort((a, b) => {
-      return a[1] - b[1];  
+      return a[1] - b[1];
     })
 
     target = targets_distance[0][0];
 
     //if(Math.abs((target.x + target.y) - (this.sprite_body.x + this.sprite_body.y)) < this.range) {
     let angleToPointer = Phaser.Math.Angle.Between(this.sprite_head.x, this.sprite_head.y, target.x, target.y);
+
+    this.current_selected_enemie = target;
     this.sprite_head.rotation = angleToPointer;
     this.graphics.clear();
     //this.graphics.strokeCircleShape(this.area_of_attack);
@@ -71,10 +110,7 @@ export class Turret extends Physics.Arcade.Sprite {
 
     if (this.debug)
       this.graphics.strokeLineShape(this.aim_line);
-    setTimeout(() => {
-      let bullet = new Bullet(this.scene, this.x, this.y);
-      this.bullets.push(bullet);
-    }, 2000)
     //}
   }
+
 }
