@@ -1,5 +1,5 @@
 import Phaser, { Game, Physics } from 'phaser';
-import { Bullet } from './simple_bullet';
+import { Bullet } from './basic_bullet';
 
 export class Turret extends Physics.Arcade.Sprite {
   constructor(scene, x, y, range, debug) {
@@ -11,7 +11,7 @@ export class Turret extends Physics.Arcade.Sprite {
     this.sprite_body.setDepth(0);
     const color = new Phaser.Display.Color();
     color.random(50)
-    this.graphics = scene.add.graphics({ lineStyle: { width: 4, color: color.color } });
+    this.graphics = scene.add.graphics({ lineStyle: { width: 2, color: color.color } });
     this.aim_line = new Phaser.Geom.Line(322, 1000, 100, 100);
     //    this.area_of_attack = new Phaser.Geom.Circle(x, y, range);
     this.range = range
@@ -20,7 +20,7 @@ export class Turret extends Physics.Arcade.Sprite {
     this.bullets = []
 
     this.current_selected_enemie;
-    this.energy = 5
+    this.energy = 100
     this.text = this.scene.add.text(this.x + 32, this.y, '', { font: '16px Arial', fill: '#00ff00' });
     this.setData('name', 'Turret');
     this.setData('energy', this.energy);
@@ -30,7 +30,7 @@ export class Turret extends Physics.Arcade.Sprite {
     ])
 
     this.bullets = [];
-    this.bullet_timer = 80;
+    this.bullet_timer = 10;
     this.isDestroyed = false;
   }
 
@@ -47,38 +47,53 @@ export class Turret extends Physics.Arcade.Sprite {
     this.sprite_head.visible = false;
     this.sprite_body.visible = false;
     this.text.visible = false;
+    this.graphics.visible = false;
   }
 
   update() {
-   
-      this.bullet_timer -= 1;
-      if (this.bullet_timer < 0 && this.current_selected_enemie != null) {
-        console.log("SHOOT")
-        this.shoot()
-        this.bullet_timer += 100
-      }
-    
+
+    this.bullet_timer -= 1;
+    if (this.bullet_timer < 0 && this.current_selected_enemie != null) {
+      console.log("SHOOT")
+      this.shoot()
+      this.bullet_timer += 10
+    }
+
   }
 
   shoot() {
+
+    // let _b = new Bullet(this.scene.physics.world, this.scene, this.x, this.y, this.current_selected_enemie, 1000);
+    // console.log(_b)
+
     let bullet = this.scene.physics.add.sprite(this.x, this.y, 'bullet');
     this.scene.physics.world.enableBody(bullet);
-    this.scene.physics.moveTo(bullet, this.current_selected_enemie.x, this.current_selected_enemie.y, 1000);
+    this.scene.physics.moveTo(bullet, this.current_selected_enemie.x, this.current_selected_enemie.y, 500);
     this.decrease_energy();
-    let particles = this.scene.add.particles('smoke');
+    this.particles = this.scene.add.particles('smoke');
 
-    let emitter = particles.createEmitter({
+    this.emitter = this.particles.createEmitter({
       speed: 50,
       scale: { start: 0.2, end: 0 },
       blendMode: 'MULTIPLY'
     });
 
-    emitter.startFollow(bullet)
-    console.log(this.energy)
+    this.emitter.startFollow(bullet)
     this.text.setText([
       this.getData('name'),
       'energy: ' + this.getData('energy')
     ])
+
+    if (this.scene) {
+      let collider = this.scene.physics.add.overlap(bullet, this.current_selected_enemie, function(action) {
+        action.body.stop();
+        this.scene.physics.world.removeCollider(collider);
+        bullet.destroy();
+
+        this.current_selected_enemie.destroy()
+      }, null, this);
+    }
+
   }
 
   look_at_target(targets) {

@@ -1,0 +1,27 @@
+{
+  "bullet": [
+    {
+      "id": 0,
+      "speed": 1000,
+      "damage": 1,
+      "size": 1,
+      "asset": "asset/bullet"
+    },
+    {
+      "id": 1,
+      "speed": 500,
+      "damage": 5,
+      "size": 2,
+      "asset": "asset/canon_ball"
+    }
+  ],
+  "turret": [
+    {
+      "id": 0,
+      "name": "Wood Turret",
+      "top_sprite": "asset/",
+      "bottom_sprite": "asset",
+      "bullets": 0
+    }
+  ]
+}

@@ -34,7 +34,6 @@ export class Player extends Physics.Arcade.Sprite {
       this.movement_left()
     }
     if (KEYS.DOWN.isDown) {
-      console.log("down")
       this.movement_down()
     }
     if (KEYS.RIGHT.isDown) {
