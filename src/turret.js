@@ -63,12 +63,12 @@ export class Turret extends Physics.Arcade.Sprite {
 
   shoot() {
 
-    // let _b = new Bullet(this.scene.physics.world, this.scene, this.x, this.y, this.current_selected_enemie, 1000);
+    let bullet = new Bullet(this.scene.physics.world, this.scene, this.x, this.y, this.current_selected_enemie, 0);
     // console.log(_b)
 
-    let bullet = this.scene.physics.add.sprite(this.x, this.y, 'bullet');
-    this.scene.physics.world.enableBody(bullet);
-    this.scene.physics.moveTo(bullet, this.current_selected_enemie.x, this.current_selected_enemie.y, 500);
+    // let bullet = this.scene.physics.add.sprite(this.x, this.y, 'bullet');
+    // this.scene.physics.world.enableBody(bullet);
+    // this.scene.physics.moveTo(bullet, this.current_selected_enemie.x, this.current_selected_enemie.y, 500);
     this.decrease_energy();
     this.particles = this.scene.add.particles('smoke');
 

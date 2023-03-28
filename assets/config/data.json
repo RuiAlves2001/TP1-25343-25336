@@ -5,23 +5,50 @@
       "speed": 1000,
       "damage": 1,
       "size": 1,
-      "asset": "asset/bullet"
+      "asset": "bullet",
+      "spread": 0,
+      "particles": {
+        "asset": "smoke",
+        "size": 0.2,
+        "speed": 50
+      },
+      "lifetime": 1000
     },
     {
       "id": 1,
-      "speed": 500,
+      "speed": 100,
       "damage": 5,
-      "size": 2,
-      "asset": "asset/canon_ball"
+      "size": 1,
+      "asset": "fire",
+      "spread":300,
+      "particles": {
+        "asset": "fire",
+        "size": 1,
+        "speed": 100
+      },
+      "lifetime": 5000
     }
   ],
   "turret": [
     {
       "id": 0,
       "name": "Wood Turret",
-      "top_sprite": "asset/",
-      "bottom_sprite": "asset",
-      "bullets": 0
+      "top_sprite": "turret_head",
+      "bottom_sprite": "turret_body",
+      "fire_rate": 100,
+      "energy": 100,
+      "base_bullet": 0,
+      "range": 400
+    },
+    {
+      "id": 1,
+      "name": "Flameturret the baconizer.",
+      "top_sprite": "turret_fire",
+      "bottom_sprite": "turret_body",
+      "fire_rate": 10,
+      "energy": 1000,
+      "base_bullet": 1,
+      "range": 200
     }
   ]
 }
