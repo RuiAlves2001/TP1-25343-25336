@@ -18,6 +18,7 @@ export class UiMenu extends Phaser.Scene {
     this.load.image("turret_body", "./assets/turret_body.png");
     this.load.image("turret_head", "./assets/turret_head.png");
     this.keyTAB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
+    this.keyESQ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESQ);
   }
 
   create() {
@@ -141,11 +142,15 @@ export class UiMenu extends Phaser.Scene {
       0.7
     ).setVisible(false);
     let turrethead = this.add.image(30, 30, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let turretbody = this.add.image(54, 222, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturrethead = this.add.text(20, 222, 'Price: 100€ | Damage: 20hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+    let turretbody = this.add.image(54, 247, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturretbody = this.add.text(20, 439, 'Price: 200€ | Damage: 50hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
     var keyObj = this.input.keyboard.addKey('tab');  // Get key object
     keyObj.on('down', function (event) {
       opentab.setVisible(false);
       returntab.setVisible(true);
+      textturrethead.setVisible(true);
+      textturretbody.setVisible(true);
       turrethead.setVisible(true);
       turretbody.setVisible(true);
       turrethead.setInteractive(true);
@@ -155,6 +160,8 @@ export class UiMenu extends Phaser.Scene {
     keyObj.on('up', function (event) {
       opentab.setVisible(true);
       returntab.setVisible(false);
+      textturrethead.setVisible(false);
+      textturretbody.setVisible(false);
       turrethead.setVisible(false);
       turretbody.setVisible(false);
       creditsBackground.setVisible(false);
