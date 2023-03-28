@@ -4,3 +4,8 @@ node_modules
 ./src/index.js
 /src/index.js
 src/index.js
+
+/build
+./build/project.bundle.js
+./build/*
+build
