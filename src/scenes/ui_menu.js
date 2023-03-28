@@ -17,8 +17,7 @@ export class UiMenu extends Phaser.Scene {
     this.load.image("player", "./assets/player.png");
     this.load.image("turret_body", "./assets/turret_body.png");
     this.load.image("turret_head", "./assets/turret_head.png");
-    this.keyTAB = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
-    this.keyESQ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESQ);
+    this.keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
   }
 
   create() {
@@ -131,8 +130,8 @@ export class UiMenu extends Phaser.Scene {
 
 
   update() {
-    let opentab = this.add.text(20, 20, 'TAB - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
-    let returntab = this.add.text(20, 20, 'TAB - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+    let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
+    let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
     let creditsBackground = this.add.rectangle(
       150,
       450,
@@ -145,7 +144,7 @@ export class UiMenu extends Phaser.Scene {
     let textturrethead = this.add.text(20, 222, 'Price: 100€ | Damage: 20hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
     let turretbody = this.add.image(54, 247, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
     let textturretbody = this.add.text(20, 439, 'Price: 200€ | Damage: 50hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
-    var keyObj = this.input.keyboard.addKey('tab');  // Get key object
+    var keyObj = this.input.keyboard.addKey('t');  // Get key object
     keyObj.on('down', function (event) {
       opentab.setVisible(false);
       returntab.setVisible(true);
