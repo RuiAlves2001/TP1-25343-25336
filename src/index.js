@@ -2,6 +2,8 @@ import 'phaser';
 import { Turret } from './turret';
 import { Player } from './player';
 import { MainScene } from './scenes/main_scene';
+import { UiMenu } from './scenes/ui_menu';
+import { MainMenuScene } from './scenes/MainMenuScene';
 
 var config = {
   type: Phaser.AUTO,
@@ -14,7 +16,7 @@ var config = {
       gravity: { y: 0 }
     }
   },
-  scene: [MainScene]
+  scene: [UiMenu,MainMenuScene,MainScene]
 };
 
 // -- Begin of variable declaration --
