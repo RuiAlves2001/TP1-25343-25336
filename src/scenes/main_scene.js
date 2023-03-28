@@ -44,11 +44,11 @@ export class MainScene extends Phaser.Scene {
       let t = new Turret(this, pointer.x, pointer.y, 300, false);
       this.turrets.add(t);
     })
-    
+
     this.bullets = this.add.group()
     this.enemies_amount = 0
     this.data.set('enemies', this.enemies_amount.toString());
-    let scene_info = this.add.text(50, this.window.height - 50, '', { font: '20px Courier', fill: '#00ff00'}) 
+    let scene_info = this.add.text(50, this.window.height - 50, '', { font: '20px Courier', fill: '#00ff00' })
     scene_info.setText([
       'Nº Enemies: ' + this.data.get('enemies')
     ])
@@ -102,7 +102,7 @@ export class MainScene extends Phaser.Scene {
           position['y'] = this.window.height + TILE_SIZE;
           position['x'] = Math.ceil(Math.random() * this.window.width)
           break;
-    }
+      }
 
       const enemie = new Enemie(this, position['x'], position['y'], 100, 100, this.castle);
 
@@ -112,15 +112,14 @@ export class MainScene extends Phaser.Scene {
       this.enemies.push(enemie)
 
 
-    let collider = this.physics.add.overlap(enemie, this.castle, function (action)
-    {
+      let collider = this.physics.add.overlap(enemie, this.castle, function (action) {
         action.body.stop();
 
         this.physics.world.removeCollider(collider);
         enemie.destroy();
         this.enemies_amount--;
-        
-    }, null, this);
+
+      }, null, this);
     }
   }
 }

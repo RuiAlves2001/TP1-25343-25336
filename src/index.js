@@ -16,7 +16,7 @@ var config = {
       gravity: { y: 0 }
     }
   },
-  scene: [MainMenuScene,UiMenu,MainScene]
+  scene: [UiMenu,MainMenuScene,MainScene]
 };
 
 // -- Begin of variable declaration --
