@@ -17,7 +17,7 @@ export class BaseTurret extends Physics.Arcade.Group {
     this.sprite_body.setDepth(0);
     const color = new Phaser.Display.Color();
     color.random(50)
-    this.graphics = scene.add.graphics({ lineStyle: { width: 2, color: color.color } });
+    this.graphics = scene.add.graphics({ lineStyle: { width: 2, color: color.color }, color: "#4433ffff" });
     this.aim_line = new Phaser.Geom.Line(322, 1000, 100, 100);
     //    this.area_of_attack = new Phaser.Geom.Circle(x, y, range);
     this.range = range
@@ -121,8 +121,6 @@ export class BaseTurret extends Physics.Arcade.Group {
 
     if(targets_distance[0][0] > this.turret_config.range) return
     target = targets_distance[0][0];
-
-    console.log(target.x)
 
     //if(Math.abs((target.x + target.y) - (this.sprite_body.x + this.sprite_body.y)) < this.range) {
     let angleToPointer = Phaser.Math.Angle.Between(this.sprite_head.x, this.sprite_head.y, target.x, target.y);
