@@ -39,10 +39,12 @@ export class MainScene extends Phaser.Scene {
   }
 
   create() {
+    // ------ BACKGROUND / MAP RELATED ------
     this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 64, height: 64 });
     this.tiles = this.map.addTilesetImage('tile_grass');
     this.layer = this.map.createBlankLayer('layer', this.tiles);
     this.layer.randomize(0, 0, 32, 32, [0, 0]); // Wall above the water
+    // ------ GAME OBJECT RELATED ------
     this.turrets = this.physics.add.group()
     this.player = new Player(this, 150, 150);
     this.camera_ui = this.cameras.add(0,0,1600,900);
@@ -62,6 +64,10 @@ export class MainScene extends Phaser.Scene {
     this.enemie_creation_timer = 0;
     this.enemies_group = this.add.group()
     
+    // ---- GAME MODE MANAGEMENT ----
+    // the classic game mode has no playable character and the camera is fixed
+    // the normal game mode has a controllable character that can shoot and build turrets
+
     if (MODE == MODES.Classic) {
       this.input.on('pointerdown', (pointer) => {
         let t = new BaseTurret(this.physics.world, this, pointer.x, pointer.y, 300, true, Math.round(Math.random()));
@@ -81,19 +87,28 @@ export class MainScene extends Phaser.Scene {
     if (MODE != MODES.RunNGun) this.crossair.setVisible(false)
     this.bullets = this.add.group()
     this.scene_info = this.add.text(50, this.window.height - 50, '', { font: '20px Courier', fill: '#00ff00' })
-    let a = this.add.group().getChildren()
+
+    // ---- UI ----
+    // TODO: need to transfer the UIMENU scene into here
+    // ui will be managed through the main_scene
+
     let UI_ONLY_ELEMENTS = this.ui_left_tab_menu.get_ui_elements();
+    console.log("UI ONLY", this.enemies_group.getChildren())
     const UI_ONLY = this.children.getAll()
+
+    this.camera_ui.setScene(this.game.scene.getScene({key: "UiMenu"}))
 
     if(UI_ONLY_ELEMENTS) {
       let camera_ui_ignorable = UI_ONLY.filter((item) => UI_ONLY_ELEMENTS.map((it) => item !== it)) 
-      this.camera_ui.ignore(camera_ui_ignorable)
+      //this.camera_ui.ignore(camera_ui_ignorable)
       this.camera_ui.visible = true
       this.camera.ignore([UI_ONLY_ELEMENTS])
     }
   }
-
+  
   update() {
+    this.camera_ui.ignore(this.enemies_group)
+    this.camera_ui.ignore(this.turrets)
     this.data.set('enemies', this.enemies_group.getLength());
     this.scene_info.setText([
       'Spawn Rate:' + ENEMIE_SPAWN_TIMER,
@@ -118,9 +133,10 @@ export class MainScene extends Phaser.Scene {
       this.graphics.fillCircle(this.cursor_x, this.cursor_y, TILE_SIZE / 2, TILE_SIZE / 2);
     }
 
-    //the towers update is not doing anything at this point
-
-
+    // ----- TURRETS -----
+    // Check if each turret has been destroyed and
+    // then remove them from memory or make them look at the target
+    // and run the update which has turret update logic
 
     this.turrets.children.each((turret) => {
       if (turret.isDestroyed) {
@@ -131,6 +147,8 @@ export class MainScene extends Phaser.Scene {
         turret.update();
       }
     })
+
+    // ----- ENEMIES RELATED -----
 
     this.enemie_creation_timer++
     if (this.enemie_creation_timer > Math.random() * ENEMIE_SPAWN_TIMER * 2) {
@@ -168,5 +186,8 @@ export class MainScene extends Phaser.Scene {
         enemie.destroy();
       }, null, this);
     }
+
+    // -----------------------
+  
   }
 }

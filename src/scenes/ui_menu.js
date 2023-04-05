@@ -15,6 +15,10 @@ export class UiMenu extends Phaser.Scene {
   preload() {
     this.load.image("btn_pause", "./assets/pause_btn.png", 270, 180);
   }
+
+  get_scene() {
+    
+  }
   
   create() {
     console.log(this.main_scene)
@@ -34,7 +38,7 @@ export class UiMenu extends Phaser.Scene {
     let turretbody = this.main_scene.add.image(54, 247, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
     let textturretbody = this.main_scene.add.text(20, 439, 'Price: 200€ | Damage: 50hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
     var keyObj = this.main_scene.input.keyboard.addKey('t');  // Get key object
-    this.ui_menu_group.add(turrethead, turrethead, turretbody, textturretbody, opentab, returntab, creditsBackground)
+    this.ui_menu_group.addMultiple([turrethead, turrethead, turretbody, textturretbody, opentab, returntab, creditsBackground])
     keyObj.on('down', function (event) {
       opentab.setVisible(false);
       returntab.setVisible(true);
@@ -87,7 +91,7 @@ export class UiMenu extends Phaser.Scene {
     let pausaBg = this.main_scene.add.image(0, 0, "bg").setOrigin(0).setDepth(1).setScale(2);
     pausaBg.alpha = 0.7;
 
-    this.ui_menu_group.add(hoverSprite,pause_label,returnMenu,pausa,restartGame,choiseLabel,pausaBg)
+    this.ui_menu_group.addMultiple([hoverSprite,pause_label,returnMenu,pausa,restartGame,choiseLabel,pausaBg])
 
 
     //Code for the pause menu
@@ -159,6 +163,7 @@ export class UiMenu extends Phaser.Scene {
   }
 
   get_ui_elements() {
+    console.log(this.ui_menu_group)
     return this.ui_menu_group.getChildren()
   }
 
