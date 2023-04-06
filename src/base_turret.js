@@ -56,17 +56,17 @@ export class BaseTurret extends Physics.Arcade.Group {
     this.scene.physics.world.removeCollider(this.collider);
   }
 
-  update() {
+  update(ignore) {
     this.graphics.clear()
     this.graphics.fillCircleShape(this.circle)
     this.bullet_timer -= 1;
     if (this.bullet_timer < 0 && this.current_selected_enemie != null) {
-      this.shoot()
+      this.shoot(ignore)
       this.bullet_timer += this.turret_config.fire_rate
     }
   }
 
-  shoot() {
+  shoot(ignore) {
     const scene = this.scene;
     // let _b = new Bullet(this.scene, this.x, this.y, this.current_selected_enemie, 0);
     // this.scene.add.existing(_b)
@@ -103,7 +103,7 @@ export class BaseTurret extends Physics.Arcade.Group {
       particles.destroy()
     }, callbackScope: this.scene, loop: false})
 
-
+    ignore.ignore([emitter, particles, _b])
   }
 
   look_at_target(targets) {

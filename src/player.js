@@ -44,6 +44,7 @@ export class Player extends Physics.Arcade.Sprite {
 
   shoot(p) {
     let _b = this.scene.physics.add.sprite(this.x, this.y, 'bullet');
+    this.scene.cameras.getCamera("UICAMERA").ignore(_b);
     this.scene.physics.world.enableBody(_b);
     this.scene.physics.moveTo(_b, p.worldX, p.worldY, 1000);
 
