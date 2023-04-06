@@ -47,23 +47,25 @@ export class MainScene extends Phaser.Scene {
     // ------ GAME OBJECT RELATED ------
     this.turrets = this.physics.add.group()
     this.player = new Player(this, 150, 150);
-    this.camera_ui = this.cameras.add(0,0,1600,900);
+    this.camera_ui = this.cameras.add(0, 0, 1600, 900);
     this.camera = this.cameras.main;
     // this.cameras.main.setViewport(0,0,1600,900);
     this.castle = this.physics.add.sprite(800, 400, "castle");
     this.input.setPollAlways();
     this.window = this.sys.game.canvas;
-    this.ui_left_tab_menu = new UiMenu(this);
-    this.ui_left_tab_menu.create();
+
+
+    // this.ui_left_tab_menu = new UiMenu(this);
+    // this.ui_left_tab_menu.create();
     this.game.config.scaleMode = Phaser.ScaleModes.NEAREST
-    
+
     this.cursor = this.game.input.activePointer
     this.graphics = this.add.graphics();
     this.cursor_x = this.cursor.x;
     this.cursor_y = this.cursor.y;
     this.enemie_creation_timer = 0;
     this.enemies_group = this.add.group()
-    
+
     // ---- GAME MODE MANAGEMENT ----
     // the classic game mode has no playable character and the camera is fixed
     // the normal game mode has a controllable character that can shoot and build turrets
@@ -74,7 +76,7 @@ export class MainScene extends Phaser.Scene {
         this.turrets.add(t);
       })
     } else {
-     this.input.manager.canvas.style.cursor = "none";
+      this.input.manager.canvas.style.cursor = "none";
       this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
         if ((this.camera.zoom + deltaY * 0.001 >= MIN_SCROLL) && (this.camera.zoom + deltaY * 0.001 <= MAX_SCROLL)) {
           this.camera.zoom += deltaY * 0.001
@@ -86,29 +88,166 @@ export class MainScene extends Phaser.Scene {
     this.crossair = this.add.sprite(0, 0, "crossair")
     if (MODE != MODES.RunNGun) this.crossair.setVisible(false)
     this.bullets = this.add.group()
-    this.scene_info = this.add.text(50, this.window.height - 50, '', { font: '20px Courier', fill: '#00ff00' })
+    this.scene_info = this.add.text(50, this.window.height - 50, '', { font: '20px monospace', fill: '#00ff00' })
 
     // ---- UI ----
     // TODO: need to transfer the UIMENU scene into here
     // ui will be managed through the main_scene
 
-    let UI_ONLY_ELEMENTS = this.ui_left_tab_menu.get_ui_elements();
-    console.log("UI ONLY", this.enemies_group.getChildren())
-    const UI_ONLY = this.children.getAll()
+    // let UI_ONLY_ELEMENTS = this.ui_left_tab_menu.get_ui_elements();
+    // console.log("UI ONLY", this.enemies_group.getChildren())
+    // const UI_ONLY = this.children.getAll()sd
+    this.camera_ui.setName("UICAMERA")
+    this.camera_ui.ignore([this.map, this.tiles, this.player, this.layer, this.graphics, this.castle, this.player.canon, this.crossair])
+    this.camera_ui.visible = true
 
-    this.camera_ui.setScene(this.game.scene.getScene({key: "UiMenu"}))
+    this.ui_menu_group = this.add.group(); // TO BE USED IN CAMERA IGNORE SHENANIGANS
+    this.keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
 
-    if(UI_ONLY_ELEMENTS) {
-      let camera_ui_ignorable = UI_ONLY.filter((item) => UI_ONLY_ELEMENTS.map((it) => item !== it)) 
-      //this.camera_ui.ignore(camera_ui_ignorable)
-      this.camera_ui.visible = true
-      this.camera.ignore([UI_ONLY_ELEMENTS])
-    }
+    let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
+    let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+    let creditsBackground = this.add.rectangle(
+      150,
+      450,
+      300,
+      900,
+      '#4e8545',
+      0.7
+    ).setVisible(false);
+    let turrethead = this.add.image(30, 30, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturrethead = this.add.text(20, 222, 'Price: 100€ | Damage: 20hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+    let turretbody = this.add.image(54, 247, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturretbody = this.add.text(20, 439, 'Price: 200€ | Damage: 50hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+    var keyObj = this.input.keyboard.addKey('t');  // Get key object
+    this.ui_menu_group.addMultiple([turrethead, turrethead, turretbody, textturretbody, opentab, returntab, creditsBackground])
+    keyObj.on('down', function (event) {
+      opentab.setVisible(false);
+      returntab.setVisible(true);
+      textturrethead.setVisible(true);
+      textturretbody.setVisible(true);
+      turrethead.setVisible(true);
+      turretbody.setVisible(true);
+      turrethead.setInteractive(true);
+      turretbody.setInteractive(true);
+      creditsBackground.setVisible(true);
+    });
+    keyObj.on('up', function (event) {
+      opentab.setVisible(true);
+      returntab.setVisible(false);
+      textturrethead.setVisible(false);
+      textturretbody.setVisible(false);
+      turrethead.setVisible(false);
+      turretbody.setVisible(false);
+      creditsBackground.setVisible(false);
+    });
+
+    this.data.set('money', 0);
+    this.data.set('difficulty', 0);
+    this.data.set('score', 0);
+    this.text = this.add.text(1000, 25, '', { font: 'bold 22px Courier', fill: '#1f2120' });
+    this.text.setText([
+      'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Score: ' + this.data.get('score')
+    ]);
+    //this.i=0;
+
+    let hoverSprite = this.add.sprite(100, 100, "player").setScale(1).setDepth(5);
+    hoverSprite.setVisible(false);
+
+    let gameIsPaused = false
+
+    let pause_label = this.add.image(this.game.renderer.width - 75, 10, "btn_pause").setOrigin(0).setDepth(0).setScale(0.1);
+    pause_label.setInteractive();
+
+    let returnMenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 100, '< Return to Menu >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
+    returnMenu.setInteractive();
+
+    let pausa = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 220, 'PAUSA', { font: '100px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
+
+    let restartGame = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Restart the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
+    restartGame.setInteractive();
+
+    let choiseLabel = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, '< Click to return to the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
+    choiseLabel.setInteractive();
+
+    let pausaBg = this.add.image(0, 0, "bg").setOrigin(0).setDepth(1).setScale(2);
+    pausaBg.alpha = 0.7;
+
+    this.ui_menu_group.addMultiple([hoverSprite, pause_label, returnMenu, pausa, restartGame, choiseLabel, pausaBg])
+
+    // Code for the pause menu
+
+    let list = [pausaBg, choiseLabel, returnMenu, restartGame, pausa];
+    list.forEach(unpause => {
+      unpause.setVisible(false);
+      unpause.setActive(false);
+    });
+
+    pause_label.on("pointerdown", () => {
+      if (gameIsPaused == false) {
+        gameIsPaused = true;
+        list.forEach(unpause => {
+          unpause.setVisible(true);
+          unpause.setActive(true);
+        })
+      }
+    });
+
+    choiseLabel.on("pointerdown", () => {
+
+      if (gameIsPaused == true) {
+        gameIsPaused = false;
+        list.forEach(unpause => {
+          unpause.setVisible(false);
+          unpause.setActive(false);
+        })
+      }
+    });
+
+    choiseLabel.on("pointerover", () => {
+      hoverSprite.setVisible(true);
+      hoverSprite.play("walk");
+      hoverSprite.x = choiseLabel.x - choiseLabel.width;
+      hoverSprite.y = choiseLabel.y;
+    })
+    choiseLabel.on("pointerout", () => {
+      hoverSprite.setVisible(false);
+    })
+
+    returnMenu.on("pointerdown", () => {
+      //inserir return menu
+    });
+
+    returnMenu.on("pointerover", () => {
+      hoverSprite.setVisible(true);
+      hoverSprite.play("walk");
+      hoverSprite.x = returnMenu.x - returnMenu.width;
+      hoverSprite.y = returnMenu.y;
+    })
+    returnMenu.on("pointerout", () => {
+      hoverSprite.setVisible(false);
+    })
+
+    restartGame.on("pointerdown", () => {
+      //inserir return menu
+    });
+
+    restartGame.on("pointerover", () => {
+      hoverSprite.setVisible(true);
+      hoverSprite.play("walk");
+      hoverSprite.x = restartGame.x - restartGame.width;
+      hoverSprite.y = restartGame.y;
+    })
+    restartGame.on("pointerout", () => {
+      hoverSprite.setVisible(false);
+    })
+
+    this.camera.ignore(this.ui_menu_group)
+
+    // ---- END OF UI ----
+
   }
-  
+
   update() {
-    this.camera_ui.ignore(this.enemies_group)
-    this.camera_ui.ignore(this.turrets)
     this.data.set('enemies', this.enemies_group.getLength());
     this.scene_info.setText([
       'Spawn Rate:' + ENEMIE_SPAWN_TIMER,
@@ -144,7 +283,7 @@ export class MainScene extends Phaser.Scene {
         this.turrets.remove(turret, true, true)
       } else {
         turret.look_at_target(this.enemies_group.children.getArray());
-        turret.update();
+        turret.update(this.camera_ui);
       }
     })
 
@@ -180,14 +319,16 @@ export class MainScene extends Phaser.Scene {
       this.enemie_creation_timer -= ENEMIE_SPAWN_TIMER * 2;
       this.enemies_group.add(enemie);
 
-      let collider = this.physics.add.overlap(enemie, this.castle, function(action) {
+      let collider = this.physics.add.overlap(enemie, this.castle, function (action) {
         action.body.stop();
         this.physics.world.removeCollider(collider);
         enemie.destroy();
       }, null, this);
     }
 
+    this.camera_ui.ignore(this.enemies_group)
+    this.camera_ui.ignore(this.turrets)
     // -----------------------
-  
+
   }
 }
