@@ -112,14 +112,18 @@ export class MainScene extends Phaser.Scene {
       300,
       900,
       '#4e8545',
-      0.7
+      0.9
     ).setVisible(false);
-    let turrethead = this.add.image(30, 30, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturrethead = this.add.text(20, 222, 'Price: 100€ | Damage: 20hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
-    let turretbody = this.add.image(54, 247, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturretbody = this.add.text(20, 439, 'Price: 200€ | Damage: 50hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+    let turrethead = this.add.image(30, 20, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturrethead = this.add.text(65, 192, 'basic turrent\n100€ | 20hp | 30dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let turretbody = this.add.image(54, 217, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturretbody = this.add.text(65, 409, 'gas turrent\n200€ | 60hp | 40dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let turrethead1 = this.add.image(30, 449, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturrethead1 = this.add.text(65, 631, 'basic turrent\n100€ | 20hp | 30dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let turretbody1 = this.add.image(54, 671, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturretbody1 = this.add.text(65, 853, 'gas turrent\n200€ | 60hp | 40dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     var keyObj = this.input.keyboard.addKey('t');  // Get key object
-    this.ui_menu_group.addMultiple([turrethead, turrethead, turretbody, textturretbody, opentab, returntab, creditsBackground])
+    this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turrethead1, textturrethead1, turretbody1, textturretbody1, opentab, returntab, creditsBackground])
     keyObj.on('down', function (event) {
       opentab.setVisible(false);
       returntab.setVisible(true);
@@ -129,6 +133,13 @@ export class MainScene extends Phaser.Scene {
       turretbody.setVisible(true);
       turrethead.setInteractive(true);
       turretbody.setInteractive(true);
+
+      textturrethead1.setVisible(true);
+      textturretbody1.setVisible(true);
+      turrethead1.setVisible(true);
+      turretbody1.setVisible(true);
+      turrethead1.setInteractive(true);
+      turretbody1.setInteractive(true);
       creditsBackground.setVisible(true);
     });
     keyObj.on('up', function (event) {
