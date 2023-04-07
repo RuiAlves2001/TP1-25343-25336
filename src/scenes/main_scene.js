@@ -104,8 +104,8 @@ export class MainScene extends Phaser.Scene {
     this.ui_menu_group = this.add.group(); // TO BE USED IN CAMERA IGNORE SHENANIGANS
     this.keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
 
-    let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
-    let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+    let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: 'bold 20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
+    let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: 'bold 20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
     let creditsBackground = this.add.rectangle(
       150,
       450,
@@ -114,14 +114,22 @@ export class MainScene extends Phaser.Scene {
       '#4e8545',
       0.9
     ).setVisible(false);
+    let pauseBackground = this.add.rectangle(
+      800,
+      450,
+      1600,
+      900,
+      '#4e8545',
+      0.7
+    ).setVisible(false);
     let turrethead = this.add.image(30, 20, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturrethead = this.add.text(65, 192, 'basic turrent\n100€ | 20hp | 30dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let textturrethead = this.add.text(65, 192, 'basic turrent\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     let turretbody = this.add.image(54, 217, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturretbody = this.add.text(65, 409, 'gas turrent\n200€ | 60hp | 40dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let textturretbody = this.add.text(65, 409, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     let turrethead1 = this.add.image(30, 449, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturrethead1 = this.add.text(65, 631, 'basic turrent\n100€ | 20hp | 30dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let textturrethead1 = this.add.text(65, 631, 'basic turrent\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     let turretbody1 = this.add.image(54, 671, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturretbody1 = this.add.text(65, 853, 'gas turrent\n200€ | 60hp | 40dm', { font: '16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let textturretbody1 = this.add.text(65, 853, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     var keyObj = this.input.keyboard.addKey('t');  // Get key object
     this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turrethead1, textturrethead1, turretbody1, textturretbody1, opentab, returntab, creditsBackground])
     keyObj.on('down', function (event) {
@@ -150,14 +158,22 @@ export class MainScene extends Phaser.Scene {
       turrethead.setVisible(false);
       turretbody.setVisible(false);
       creditsBackground.setVisible(false);
+
+      textturrethead1.setVisible(false);
+      textturretbody1.setVisible(false);
+      turrethead1.setVisible(false);
+      turretbody1.setVisible(false);
+      turrethead1.setInteractive(false);
+      turretbody1.setInteractive(false);
+      creditsBackground.setVisible(false);
     });
 
     this.data.set('money', 0);
     this.data.set('difficulty', 0);
-    this.data.set('score', 0);
+    this.data.set('time', 0);
     this.text = this.add.text(1000, 25, '', { font: 'bold 22px Courier', fill: '#1f2120' });
     this.text.setText([
-      'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Score: ' + this.data.get('score')
+      'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Time: ' + this.data.get('time')
     ]);
     //this.i=0;
 
@@ -183,7 +199,7 @@ export class MainScene extends Phaser.Scene {
     let pausaBg = this.add.image(0, 0, "bg").setOrigin(0).setDepth(1).setScale(2);
     pausaBg.alpha = 0.7;
 
-    this.ui_menu_group.addMultiple([hoverSprite, pause_label, returnMenu, pausa, restartGame, choiseLabel, pausaBg])
+    this.ui_menu_group.addMultiple([hoverSprite, pause_label,pauseBackground, returnMenu, pausa, restartGame, choiseLabel, pausaBg])
 
     // Code for the pause menu
 
@@ -197,6 +213,7 @@ export class MainScene extends Phaser.Scene {
       if (gameIsPaused == false) {
         gameIsPaused = true;
         list.forEach(unpause => {
+          pauseBackground.setVisible(true);
           unpause.setVisible(true);
           unpause.setActive(true);
         })
@@ -208,6 +225,7 @@ export class MainScene extends Phaser.Scene {
       if (gameIsPaused == true) {
         gameIsPaused = false;
         list.forEach(unpause => {
+          pauseBackground.setVisible(false);
           unpause.setVisible(false);
           unpause.setActive(false);
         })

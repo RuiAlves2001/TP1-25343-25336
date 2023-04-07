@@ -53,24 +53,6 @@ export class MainMenuScene extends Phaser.Scene {
     voltarmenu.setInteractive();
     voltarmenu.setVisible(false);
 
-    //this.pauseOnblur=false;
-    //this.sound.play("title_music",{
-    //  loop: true
-    //})
-
-    /*
-    let listpointerover = [playButton, classicmode, alternativemode, optionsButton, voltarmenu];
-    listpointerover.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = listpointerover.x - listpointerover.width;
-      hoverSprite.y = listpointerover.y;
-    })
-    listpointerover.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
-    */
-
 
     playButton.on("pointerdown", () => {
       optionsButton.setVisible(false);
