@@ -121,7 +121,11 @@ export class MainScene extends Phaser.Scene {
       900,
       '#4e8545',
       0.7
-    ).setVisible(false);
+    ).setVisible(false); 
+    this.data.set('money', 0);
+    this.data.set('difficulty', 0);
+    this.data.set('time', 0);
+    let textinfo = this.add.text(1000, 25, 'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Time: ' + this.data.get('time'), { font: 'bold 22px Courier', fill: '#1f2120' });
     let turrethead = this.add.image(30, 20, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
     let textturrethead = this.add.text(65, 192, 'basic turrent\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     let turretbody = this.add.image(54, 217, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
@@ -131,7 +135,7 @@ export class MainScene extends Phaser.Scene {
     let turretbody1 = this.add.image(54, 671, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
     let textturretbody1 = this.add.text(65, 853, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     var keyObj = this.input.keyboard.addKey('t');  // Get key object
-    this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turret_fire, textturret_fire, turretbody1, textturretbody1, opentab, returntab, creditsBackground])
+    this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turret_fire, textturret_fire, turretbody1, textturretbody1, opentab, returntab, creditsBackground, textinfo])
     keyObj.on('down', function (event) {
       opentab.setVisible(false);
       returntab.setVisible(true);
@@ -167,14 +171,13 @@ export class MainScene extends Phaser.Scene {
       turretbody1.setInteractive(false);
       creditsBackground.setVisible(false);
     });
-
-    this.data.set('money', 0);
-    this.data.set('difficulty', 0);
-    this.data.set('time', 0);
-    this.text = this.add.text(1000, 25, '', { font: 'bold 22px Courier', fill: '#1f2120' });
-    this.text.setText([
-      'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Time: ' + this.data.get('time')
-    ]);
+    
+    turrethead.on("pointerdown", () => {
+      console.log("testecefw")
+      textturrethead.setColor('#95ff00')
+    });
+   
+    
     //this.i=0;
 
     let hoverSprite = this.add.sprite(100, 100, "player").setScale(1).setDepth(5);
@@ -254,7 +257,7 @@ export class MainScene extends Phaser.Scene {
     })
 
     restartGame.on("pointerdown", () => {
-      //inserir return menu
+      this.scene.restart();
     });
 
     restartGame.on("pointerover", () => {
