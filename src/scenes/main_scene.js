@@ -112,7 +112,7 @@ export class MainScene extends Phaser.Scene {
       300,
       900,
       '#4e8545',
-      0.9
+      0.8
     ).setVisible(false);
     let pauseBackground = this.add.rectangle(
       800,
@@ -126,12 +126,12 @@ export class MainScene extends Phaser.Scene {
     let textturrethead = this.add.text(65, 192, 'basic turrent\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     let turretbody = this.add.image(54, 217, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
     let textturretbody = this.add.text(65, 409, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
-    let turrethead1 = this.add.image(30, 449, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturrethead1 = this.add.text(65, 631, 'basic turrent\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    let turret_fire = this.add.image(100, 500, "turret_fire").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    let textturret_fire = this.add.text(65, 631, 'fire turret\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     let turretbody1 = this.add.image(54, 671, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
     let textturretbody1 = this.add.text(65, 853, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
     var keyObj = this.input.keyboard.addKey('t');  // Get key object
-    this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turrethead1, textturrethead1, turretbody1, textturretbody1, opentab, returntab, creditsBackground])
+    this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turret_fire, textturret_fire, turretbody1, textturretbody1, opentab, returntab, creditsBackground])
     keyObj.on('down', function (event) {
       opentab.setVisible(false);
       returntab.setVisible(true);
@@ -142,11 +142,11 @@ export class MainScene extends Phaser.Scene {
       turrethead.setInteractive(true);
       turretbody.setInteractive(true);
 
-      textturrethead1.setVisible(true);
+      textturret_fire.setVisible(true);
       textturretbody1.setVisible(true);
-      turrethead1.setVisible(true);
+      turret_fire.setVisible(true);
       turretbody1.setVisible(true);
-      turrethead1.setInteractive(true);
+      turret_fire.setInteractive(true);
       turretbody1.setInteractive(true);
       creditsBackground.setVisible(true);
     });
@@ -159,11 +159,11 @@ export class MainScene extends Phaser.Scene {
       turretbody.setVisible(false);
       creditsBackground.setVisible(false);
 
-      textturrethead1.setVisible(false);
+      textturret_fire.setVisible(false);
       textturretbody1.setVisible(false);
-      turrethead1.setVisible(false);
+      turret_fire.setVisible(false);
       turretbody1.setVisible(false);
-      turrethead1.setInteractive(false);
+      turret_fire.setInteractive(false);
       turretbody1.setInteractive(false);
       creditsBackground.setVisible(false);
     });
@@ -196,14 +196,11 @@ export class MainScene extends Phaser.Scene {
     let choiseLabel = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, '< Click to return to the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
     choiseLabel.setInteractive();
 
-    let pausaBg = this.add.image(0, 0, "bg").setOrigin(0).setDepth(1).setScale(2);
-    pausaBg.alpha = 0.7;
-
-    this.ui_menu_group.addMultiple([hoverSprite, pause_label,pauseBackground, returnMenu, pausa, restartGame, choiseLabel, pausaBg])
+    this.ui_menu_group.addMultiple([hoverSprite, pause_label,pauseBackground, returnMenu, pausa, restartGame, choiseLabel])
 
     // Code for the pause menu
 
-    let list = [pausaBg, choiseLabel, returnMenu, restartGame, pausa];
+    let list = [choiseLabel, returnMenu, restartGame, pausa];
     list.forEach(unpause => {
       unpause.setVisible(false);
       unpause.setActive(false);
