@@ -1,13 +1,16 @@
 // Player class
 import { Physics } from 'phaser';
 import { BaseTurret } from "./base_turret";
+import { get_turret } from './utils';
 
 let KEYS = {
   UP: Phaser.Input.Keyboard.KeyCodes.W,
   DOWN: Phaser.Input.Keyboard.KeyCodes.S,
   LEFT: Phaser.Input.Keyboard.KeyCodes.A,
   RIGHT: Phaser.Input.Keyboard.KeyCodes.D,
-  ACTION: Phaser.Input.Keyboard.KeyCodes.SPACE
+  ACTION: Phaser.Input.Keyboard.KeyCodes.SPACE,
+  INCREASE_SPAWN_RATE: 171,
+  DECREASE_SPAWN_RATE: 173,
 }
 
 export class Player extends Physics.Arcade.Sprite {
@@ -22,23 +25,31 @@ export class Player extends Physics.Arcade.Sprite {
     scene.physics.world.enableBody(this);
     scene.add.existing(this);
     this.scene.add.existing(this.canon);
-    this.setDepth(3) 
+    this.setDepth(3)
     this.canon.setDepth(4)
     this.acc = 200;
     this.scene.input.activePointer.updateWorldPoint(this.scene.cameras.main);
     this.scene.input.on('pointerdown', (pointer) => {
       this.shoot(this.scene.input.activePointer)
     })
-    
+
+    this.scene.events.on('k', this.preload, this);
+    this.scene.input.keyboard.on('keydown', function (k) { console.log(k) })
   }
 
   preload() {
+    console.log("SPAW")
   }
 
-  spawn_turret() {
+  spawn_turret(money) {
     if (Phaser.Input.Keyboard.JustDown(KEYS.ACTION)) {
-      let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, Math.round(Math.random()));
-      return t
+      let turret_type = Math.round(Math.random())
+      turret_type = 2;
+      let turret_data = get_turret(turret_type);
+      if (money - turret_data.price >= 0) {
+        let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, turret_type);
+        return [t, money - turret_data.price]
+      }
     }
   }
 
@@ -48,11 +59,12 @@ export class Player extends Physics.Arcade.Sprite {
     this.scene.physics.world.enableBody(_b);
     this.scene.physics.moveTo(_b, p.worldX, p.worldY, 1000);
 
-    const collider = this.scene.physics.add.overlap(_b, this.scene.enemies_group, function(action, target) {
+    const collider = this.scene.physics.add.overlap(_b, this.scene.enemies_group, function (action, target) {
       action.body.stop();
       this.scene.physics.world.removeCollider(collider);
       _b.destroy();
-      target.destroy()
+      target.destroy();
+      this.scene.events.emit("killed")
       // this.current_selected_enemie.destroy()
       // particles.destroy()
     }, null, this);
@@ -64,7 +76,7 @@ export class Player extends Physics.Arcade.Sprite {
     this.canon.y = this.y
     this.canon.rotation = Phaser.Math.Angle.Between(this.canon.x, this.canon.y, this.scene.input.activePointer.worldX, this.scene.input.activePointer.worldY)
 
-    this.setVelocity(0,0);
+    this.setVelocity(0, 0);
     if (KEYS.UP.isDown) {
       this.movement_up();
     }
@@ -77,7 +89,17 @@ export class Player extends Physics.Arcade.Sprite {
     if (KEYS.RIGHT.isDown) {
       this.movement_right()
     }
-    
+
+    if (KEYS.INCREASE_SPAWN_RATE.isDown) {
+      console.log("+++")
+      this.scene.events.emit("INCREASE_SPAWN_RATE");
+    }
+
+    if (KEYS.INCREASE_SPAWN_RATE.isDown) {
+      console.log("---")
+      this.scene.events.emit("DECREASE_SPAWN_RATE");
+    }
+
     if (Phaser.Input.MOUSE_DOWN) {
       console.log("SHOOT")
     }

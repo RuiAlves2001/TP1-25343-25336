@@ -80,7 +80,7 @@ export class BaseTurret extends Physics.Arcade.Group {
     const emitter = particles.createEmitter({
       speed: this.bullet_config.particles.speed,
       scale: { start: this.bullet_config.particles.size, end: 0 },
-      blendMode: 'MULTIPLY'
+      blendMode: 'ADD'
     });
 
     emitter.startFollow(_b)
@@ -89,8 +89,9 @@ export class BaseTurret extends Physics.Arcade.Group {
       'energy: ' + this.sprite_head.getData('energy')
     ])
 
-    this.collider = this.scene.physics.add.overlap(_b, this.scene.enemies_group, function(action, target) {
+    this.collider = scene.physics.add.overlap(_b, scene.enemies_group, function(action, target) {
       action.body.stop();
+      scene.events.emit("killed");
       scene.physics.world.removeCollider(this.collider);
       _b.destroy();
       target.destroy()
