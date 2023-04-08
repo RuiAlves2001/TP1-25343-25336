@@ -4,6 +4,7 @@ import { Player } from './player';
 import { MainScene } from './scenes/main_scene';
 import { UiMenu } from './scenes/ui_menu';
 import { MainMenuScene } from './scenes/MainMenuScene';
+import { PauseScene } from './scenes/pause';
 
 var config = {
   type: Phaser.AUTO,
@@ -16,7 +17,7 @@ var config = {
       gravity: { y: 0 }
     }
   },
-  scene: [MainScene, MainMenuScene]
+  scene: [MainScene, MainMenuScene, PauseScene]
 };
 
 // -- Begin of variable declaration --

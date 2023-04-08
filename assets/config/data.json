@@ -27,6 +27,20 @@
         "speed": 100
       },
       "lifetime": 5000
+    },
+    {
+      "id": 2,
+      "speed": 2000,
+      "damage": 1,
+      "size": 0.5,
+      "asset": "bullet",
+      "spread": 10,
+      "particles": {
+        "asset": "laser",
+        "size": 2,
+        "speed": 100
+      },
+      "lifetime": 1000
     }
   ],
   "turret": [
@@ -35,10 +49,11 @@
       "name": "Wood Turret",
       "top_sprite": "turret_head",
       "bottom_sprite": "turret_body",
-      "fire_rate": 100,
+      "fire_rate": 10,
       "energy": 100,
       "base_bullet": 0,
-      "range": 400
+      "range": 400,
+      "price": 20
     },
     {
       "id": 1,
@@ -48,7 +63,19 @@
       "fire_rate": 10,
       "energy": 1000,
       "base_bullet": 1,
-      "range": 200
+      "range": 200,
+      "price":100
+    },
+    {
+      "id": 2,
+      "name": "The laser lad (Lasad!).",
+      "top_sprite": "turret_laser",
+      "bottom_sprite": "turret_body",
+      "fire_rate": 1,
+      "energy": 500,
+      "base_bullet": 2,
+      "range": 200,
+      "price":200
     }
   ]
 }

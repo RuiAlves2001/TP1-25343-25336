@@ -12,9 +12,17 @@ const MODES = {
 
 const TILE_SIZE = 64;
 const MODE = MODES.RunNGun
-let ENEMIE_SPAWN_TIMER = 50;
+let ENEMIE_SPAWN_TIMER = 5;
 const MAX_SCROLL = 3
 const MIN_SCROLL = 0.5
+
+const KEYS = {
+  INCREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.ONE,
+  DECREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.TWO,
+  LEFT: Phaser.Input.Keyboard.KeyCodes.A,
+  RIGHT: Phaser.Input.Keyboard.KeyCodes.D,
+  ACTION: Phaser.Input.Keyboard.KeyCodes.SPACE
+}
 
 
 export class MainScene extends Phaser.Scene {
@@ -25,32 +33,39 @@ export class MainScene extends Phaser.Scene {
   preload() {
     this.load.image('turret_head', 'assets/turret_head.png');
     this.load.image('turret_body', 'assets/turret_body.png');
-    this.load.image('player', 'assets/player.png')
+    this.load.image('turret_laser', 'assets/head_laser.png')
+    this.load.image('player', 'assets/player_new.png')
     this.load.image('tile_grass', 'assets/grass.png')
-    this.load.image('castle', 'assets/castle.png')
+    this.load.image('castle', 'assets/_castle.png')
     this.load.image('bullet', 'assets/bullet.png')
     this.load.image('smoke', 'assets/smoke.png');
     this.load.image('enemie', 'assets/Slime.png');
     this.load.image('turret_fire', 'assets/fire_turret_head.png');
     this.load.image('fire', 'assets/fire.png');
     this.load.image('canon', 'assets/canon.png')
+    this.load.image('laser', 'assets/laser.png')
     this.load.image('crossair', 'assets/crossair.png')
     this.load.image("btn_pause", "./assets/pause_btn.png", 270, 180);
   }
 
   create() {
+    // ------ GAME VARIABLES ------
+    this.money = 200;
+
+
     // ------ BACKGROUND / MAP RELATED ------
-    this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 64, height: 64 });
+    this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 256, height: 64 });
     this.tiles = this.map.addTilesetImage('tile_grass');
     this.layer = this.map.createBlankLayer('layer', this.tiles);
-    this.layer.randomize(0, 0, 32, 32, [0, 0]); // Wall above the water
+    this.layer.randomize(0, 0, 128, 128, [0, 1, 2, 3]); // Wall above the water
     // ------ GAME OBJECT RELATED ------
     this.turrets = this.physics.add.group()
-    this.player = new Player(this, 150, 150);
+    this.player = new Player(this, 64*32, 64*32);
     this.camera_ui = this.cameras.add(0, 0, 1600, 900);
     this.camera = this.cameras.main;
+    this.camera.setBounds(0,0,64*64,64*64)
     // this.cameras.main.setViewport(0,0,1600,900);
-    this.castle = this.physics.add.sprite(800, 400, "castle");
+    this.castle = this.physics.add.sprite(64*32, 64*32, "castle");
     this.input.setPollAlways();
     this.window = this.sys.game.canvas;
 
@@ -150,104 +165,58 @@ export class MainScene extends Phaser.Scene {
     ]);
     //this.i=0;
 
-    let hoverSprite = this.add.sprite(100, 100, "player").setScale(1).setDepth(5);
-    hoverSprite.setVisible(false);
+    // let hoverSprite = this.add.sprite(100, 100, "player").setScale(1).setDepth(5);
+    // hoverSprite.setVisible(false);
 
     let gameIsPaused = false
 
+    this.events.on('resume', function () {
+      gameIsPaused = false
+    })
+
     let pause_label = this.add.image(this.game.renderer.width - 75, 10, "btn_pause").setOrigin(0).setDepth(0).setScale(0.1);
     pause_label.setInteractive();
-
-    let returnMenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 100, '< Return to Menu >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-    returnMenu.setInteractive();
-
-    let pausa = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 220, 'PAUSA', { font: '100px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-
-    let restartGame = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Restart the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-    restartGame.setInteractive();
-
-    let choiseLabel = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, '< Click to return to the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-    choiseLabel.setInteractive();
-
-    let pausaBg = this.add.image(0, 0, "bg").setOrigin(0).setDepth(1).setScale(2);
-    pausaBg.alpha = 0.7;
-
-    this.ui_menu_group.addMultiple([hoverSprite, pause_label, returnMenu, pausa, restartGame, choiseLabel, pausaBg])
-
-    // Code for the pause menu
-
-    let list = [pausaBg, choiseLabel, returnMenu, restartGame, pausa];
-    list.forEach(unpause => {
-      unpause.setVisible(false);
-      unpause.setActive(false);
-    });
-
     pause_label.on("pointerdown", () => {
       if (gameIsPaused == false) {
+        this.scene.pause();
+        this.scene.launch('PauseScene');
         gameIsPaused = true;
-        list.forEach(unpause => {
-          unpause.setVisible(true);
-          unpause.setActive(true);
-        })
+        // sd
       }
     });
-
-    choiseLabel.on("pointerdown", () => {
-
-      if (gameIsPaused == true) {
-        gameIsPaused = false;
-        list.forEach(unpause => {
-          unpause.setVisible(false);
-          unpause.setActive(false);
-        })
-      }
-    });
-
-    choiseLabel.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = choiseLabel.x - choiseLabel.width;
-      hoverSprite.y = choiseLabel.y;
-    })
-    choiseLabel.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
-
-    returnMenu.on("pointerdown", () => {
-      //inserir return menu
-    });
-
-    returnMenu.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = returnMenu.x - returnMenu.width;
-      hoverSprite.y = returnMenu.y;
-    })
-    returnMenu.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
-
-    restartGame.on("pointerdown", () => {
-      //inserir return menu
-    });
-
-    restartGame.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = restartGame.x - restartGame.width;
-      hoverSprite.y = restartGame.y;
-    })
-    restartGame.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
 
     this.camera.ignore(this.ui_menu_group)
-
     // ---- END OF UI ----
+
+    const incMoney = () => {
+      console.log("MONEY")    
+      this.money += 1;
+    }
+
+    this.events.addListener("killed", function() {
+      console.log("KILLED")
+      incMoney();
+    })
+
+    this.events.addListener("INCREASE_SPAWN_RATE", function() {
+      ENEMIE_SPAWN_TIMER = Math.max(0, ENEMIE_SPAWN_TIMER - 0.1)
+    })
+
+    this.events.addListener("DECREASE_SPAWN_RATE", function() {
+      ENEMIE_SPAWN_TIMER -= Math.min(0, ENEMIE_SPAWN_TIMER - 5)
+    })
 
   }
 
   update() {
+
+    if (KEYS.INCREASE_SPAWN_RATE.isDown) {
+      this.increase_spawn_rate();
+    }
+    if (KEYS.DECREASE_SPAWN_RATE.isDown) {
+      this.decrease_spawn_rate();
+    }
+
     this.data.set('enemies', this.enemies_group.getLength());
     this.scene_info.setText([
       'Spawn Rate:' + ENEMIE_SPAWN_TIMER,
@@ -257,12 +226,15 @@ export class MainScene extends Phaser.Scene {
       this.input.activePointer.updateWorldPoint(this.cameras.main);
 
       this.player.update();
-      let t = this.player.spawn_turret();
+      let tm = this.player.spawn_turret(this.money);
+      if(tm) {
+        this.money = tm[1]
+      }
       this.crossair.x = this.input.activePointer.worldX
       this.crossair.y = this.input.activePointer.worldY
-      if (t) {
+      if (tm) {
         this.camera.shake(100, 0.001)
-        this.turrets.add(t)
+        this.turrets.add(tm[0])
       }
     } else {
       this.graphics.clear();
@@ -290,29 +262,32 @@ export class MainScene extends Phaser.Scene {
     // ----- ENEMIES RELATED -----
 
     this.enemie_creation_timer++
-    if (this.enemie_creation_timer > Math.random() * ENEMIE_SPAWN_TIMER * 2) {
-      ENEMIE_SPAWN_TIMER -= Math.min(ENEMIE_SPAWN_TIMER, 0.05);
+    if (this.enemie_creation_timer > Math.random() * ENEMIE_SPAWN_TIMER) {
+      ENEMIE_SPAWN_TIMER -= Math.min(ENEMIE_SPAWN_TIMER, 0.02);
+      ENEMIE_SPAWN_TIMER = Math.max(ENEMIE_SPAWN_TIMER, 2);
       this.enemies_amount++
       let position = {};
 
       switch (Math.ceil(Math.random() * 4)) {
         case 1:
           position['x'] = -TILE_SIZE
-          position['y'] = Math.ceil(Math.random() * this.camera.height)
+          position['y'] = Math.ceil(Math.random() * 64*64)
           break;
         case 2:
-          position['x'] = TILE_SIZE
-          position['y'] = Math.ceil(Math.random() * this.camera.height)
+          position['x'] = TILE_SIZE + (64*64)
+          position['y'] = Math.ceil(Math.random() * 64*64)
           break;
         case 3:
           position['y'] = -TILE_SIZE
-          position['x'] = Math.ceil(Math.random() * this.window.width)
+          position['x'] = Math.ceil(Math.random() * 64*64)
           break;
         default:
-          position['y'] = TILE_SIZE
-          position['x'] = Math.ceil(Math.random() * this.window.width)
+          position['y'] = TILE_SIZE + (64*64)
+          position['x'] = Math.ceil(Math.random() * 64*64)
           break;
       }
+
+      console.log(position)
 
       const enemie = new Enemie(this, position['x'], position['y'], 100, 100, this.castle);
       this.physics.moveToObject(enemie, this.castle, 50);
@@ -323,6 +298,7 @@ export class MainScene extends Phaser.Scene {
         action.body.stop();
         this.physics.world.removeCollider(collider);
         enemie.destroy();
+
       }, null, this);
     }
 
@@ -330,5 +306,14 @@ export class MainScene extends Phaser.Scene {
     this.camera_ui.ignore(this.turrets)
     // -----------------------
 
+    this.data.set("money", this.money)
+    this.text.x = (this.game.renderer.width - `Money:  ${this.data.get('money')}  Difficulty: ${this.data.get('difficulty')} Score: ${this.data.get('score')}`.length * 10 - 300);
+    this.text.setText([
+      'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Score: ' + this.data.get('score')
+    ]);
+
+    // ----- CHEAT RELATED / SHORT CUTS -----
+
+    
   }
 }
