@@ -3,14 +3,14 @@
     {
       "id": 0,
       "speed": 1000,
-      "damage": 1,
-      "size": 1,
+      "damage": 2,
+      "size": 2,
       "asset": "bullet",
       "spread": 0,
       "particles": {
         "asset": "smoke",
-        "size": 0.2,
-        "speed": 50
+        "size": 0.4,
+        "speed": 100
       },
       "lifetime": 1000
     },
@@ -32,15 +32,15 @@
       "id": 2,
       "speed": 2000,
       "damage": 1,
-      "size": 0.5,
+      "size": 2,
       "asset": "bullet",
-      "spread": 10,
+      "spread": 1,
       "particles": {
         "asset": "laser",
         "size": 2,
-        "speed": 100
+        "speed": 200
       },
-      "lifetime": 1000
+      "lifetime": 2000
     }
   ],
   "turret": [
@@ -49,7 +49,7 @@
       "name": "Wood Turret",
       "top_sprite": "turret_head",
       "bottom_sprite": "turret_body",
-      "fire_rate": 10,
+      "fire_rate": 50,
       "energy": 100,
       "base_bullet": 0,
       "range": 400,
@@ -72,7 +72,7 @@
       "top_sprite": "turret_laser",
       "bottom_sprite": "turret_body",
       "fire_rate": 1,
-      "energy": 500,
+      "energy": 1000,
       "base_bullet": 2,
       "range": 200,
       "price":200

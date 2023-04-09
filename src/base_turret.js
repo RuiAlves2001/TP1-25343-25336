@@ -21,7 +21,7 @@ export class BaseTurret extends Physics.Arcade.Group {
     this.aim_line = new Phaser.Geom.Line(322, 1000, 100, 100);
     //    this.area_of_attack = new Phaser.Geom.Circle(x, y, range);
     this.range = range
-    // this.aim_line = scene.add.line(x, y, 0, 0, 140, 0, 0xff33ffff);
+    //this.aim_line = scene.add.line(x, y, 0, 0, 140, 0, 0xff33ffff);
     this.bullets = []
 
     this.energy = this.turret_config.energy
@@ -35,7 +35,7 @@ export class BaseTurret extends Physics.Arcade.Group {
     this.bullets = this.scene.physics.add.group()
     this.bullet_timer = 1;
     this.isDestroyed = false;
-    this.circle = new Phaser.Geom.Circle(x,y,range)
+    //this.circle = new Phaser.Geom.Circle(x,y,range)
 
     this.addMultiple([this.sprite_head, this.sprite_body, this.text, this.graphics, this.bullets])
     this.scene.physics.world.enable(this);
@@ -51,6 +51,7 @@ export class BaseTurret extends Physics.Arcade.Group {
   }
 
   _destroy() {
+    this.scene.events.emit("killed");
     this.isDestroyed = true
     this.bullets.clear()
     this.scene.physics.world.removeCollider(this.collider);
@@ -58,7 +59,7 @@ export class BaseTurret extends Physics.Arcade.Group {
 
   update(ignore) {
     this.graphics.clear()
-    this.graphics.fillCircleShape(this.circle)
+    //this.graphics.fillCircleShape(this.circle)
     this.bullet_timer -= 1;
     if (this.bullet_timer < 0 && this.current_selected_enemie != null) {
       this.shoot(ignore)
@@ -80,7 +81,7 @@ export class BaseTurret extends Physics.Arcade.Group {
     const emitter = particles.createEmitter({
       speed: this.bullet_config.particles.speed,
       scale: { start: this.bullet_config.particles.size, end: 0 },
-      blendMode: 'ADD'
+      blendMode: 'MULTIPLY'
     });
 
     emitter.startFollow(_b)
@@ -91,10 +92,9 @@ export class BaseTurret extends Physics.Arcade.Group {
 
     this.collider = scene.physics.add.overlap(_b, scene.enemies_group, function(action, target) {
       action.body.stop();
-      scene.events.emit("killed");
       scene.physics.world.removeCollider(this.collider);
       _b.destroy();
-      target.destroy()
+      target.damage(this.bullet_config.damage)
       particles.destroy()
     }, null, this);
 
