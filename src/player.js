@@ -9,8 +9,9 @@ let KEYS = {
   LEFT: Phaser.Input.Keyboard.KeyCodes.A,
   RIGHT: Phaser.Input.Keyboard.KeyCodes.D,
   ACTION: Phaser.Input.Keyboard.KeyCodes.SPACE,
-  INCREASE_SPAWN_RATE: 171,
-  DECREASE_SPAWN_RATE: 173,
+  INCREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.X,
+  DECREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.Z,
+  ADD_MONEY: Phaser.Input.Keyboard.KeyCodes.M
 }
 
 export class Player extends Physics.Arcade.Sprite {
@@ -34,7 +35,6 @@ export class Player extends Physics.Arcade.Sprite {
     })
 
     this.scene.events.on('k', this.preload, this);
-    this.scene.input.keyboard.on('keydown', function (k) { console.log(k) })
   }
 
   preload() {
@@ -44,7 +44,7 @@ export class Player extends Physics.Arcade.Sprite {
   spawn_turret(money) {
     if (Phaser.Input.Keyboard.JustDown(KEYS.ACTION)) {
       let turret_type = Math.round(Math.random())
-      turret_type = 2;
+      turret_type = 0;
       let turret_data = get_turret(turret_type);
       if (money - turret_data.price >= 0) {
         let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, turret_type);
@@ -63,8 +63,8 @@ export class Player extends Physics.Arcade.Sprite {
       action.body.stop();
       this.scene.physics.world.removeCollider(collider);
       _b.destroy();
-      target.destroy();
-      this.scene.events.emit("killed")
+      target.damage(1);
+      
       // this.current_selected_enemie.destroy()
       // particles.destroy()
     }, null, this);
@@ -95,13 +95,13 @@ export class Player extends Physics.Arcade.Sprite {
       this.scene.events.emit("INCREASE_SPAWN_RATE");
     }
 
-    if (KEYS.INCREASE_SPAWN_RATE.isDown) {
+    if (KEYS.DECREASE_SPAWN_RATE.isDown) {
       console.log("---")
       this.scene.events.emit("DECREASE_SPAWN_RATE");
     }
 
-    if (Phaser.Input.MOUSE_DOWN) {
-      console.log("SHOOT")
+    if(KEYS.ADD_MONEY.isDown) {
+      this.scene.events.emit("ADD_MONEY");
     }
   }
 

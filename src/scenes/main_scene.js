@@ -4,6 +4,7 @@ import { Player } from "../player";
 import { Enemie } from "../enemie";
 import { BaseTurret } from "../base_turret";
 import { UiMenu } from "./ui_menu";
+import { HealthBar } from "../health_bar";
 
 const MODES = {
   Classic: 0,
@@ -12,9 +13,10 @@ const MODES = {
 
 const TILE_SIZE = 64;
 const MODE = MODES.RunNGun
-let ENEMIE_SPAWN_TIMER = 5;
+let ENEMIE_SPAWN_TIMER = 50;
 const MAX_SCROLL = 3
 const MIN_SCROLL = 0.5
+let TIME_REMAINING
 
 const KEYS = {
   INCREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.ONE,
@@ -39,20 +41,26 @@ export class MainScene extends Phaser.Scene {
     this.load.image('castle', 'assets/_castle.png')
     this.load.image('bullet', 'assets/bullet.png')
     this.load.image('smoke', 'assets/smoke.png');
-    this.load.image('enemie', 'assets/Slime.png');
+    this.load.image('slime', 'assets/slime/slime.png');
+    this.load.image('slime-1', 'assets/slime/slime_1.png');
+    this.load.image('enemie_damaged', 'assets/_Slime_hit.png')
     this.load.image('turret_fire', 'assets/fire_turret_head.png');
     this.load.image('fire', 'assets/fire.png');
     this.load.image('canon', 'assets/canon.png')
     this.load.image('laser', 'assets/laser.png')
     this.load.image('crossair', 'assets/crossair.png')
-    this.load.image("btn_pause", "./assets/pause_btn.png", 270, 180);
+    this.load.image("btn_pause", "assets/pause_btn.png", 270, 180);
+    this.load.image("boss", "assets/bossman/boss.png");
+    this.load.image("boss-4", "assets/bossman/boss_4.png");
+    this.load.image("boss-3", "assets/bossman/boss_3.png");
+    this.load.image("boss-2", "assets/bossman/boss_2.png");
+    this.load.image("boss-1", "assets/bossman/boss_1.png");
   }
 
   create() {
     // ------ GAME VARIABLES ------
-    this.money = 200;
-
-
+    this.money = 0;
+    TIME_REMAINING = 60*5*120; // 5 minutes
     // ------ BACKGROUND / MAP RELATED ------
     this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 256, height: 64 });
     this.tiles = this.map.addTilesetImage('tile_grass');
@@ -68,11 +76,11 @@ export class MainScene extends Phaser.Scene {
     this.castle = this.physics.add.sprite(64*32, 64*32, "castle");
     this.input.setPollAlways();
     this.window = this.sys.game.canvas;
-
+    this.health = 124;
 
     // this.ui_left_tab_menu = new UiMenu(this);
     // this.ui_left_tab_menu.create();
-    this.game.config.scaleMode = Phaser.ScaleModes.NEAREST
+    // this.game.config.scaleMode = Phaser.ScaleModes.NEAREST  
 
     this.cursor = this.game.input.activePointer
     this.graphics = this.add.graphics();
@@ -203,20 +211,19 @@ export class MainScene extends Phaser.Scene {
     })
 
     this.events.addListener("DECREASE_SPAWN_RATE", function() {
-      ENEMIE_SPAWN_TIMER -= Math.min(0, ENEMIE_SPAWN_TIMER - 5)
+      console.log("DECREASE")
+      ENEMIE_SPAWN_TIMER += 1
     })
+
+    this.events.addListener("ADD_MONEY", function() {
+      incMoney();
+    })
+
+    this.castle_health = new HealthBar(this, 32*32-32, 32*32+32, 124);
 
   }
 
   update() {
-
-    if (KEYS.INCREASE_SPAWN_RATE.isDown) {
-      this.increase_spawn_rate();
-    }
-    if (KEYS.DECREASE_SPAWN_RATE.isDown) {
-      this.decrease_spawn_rate();
-    }
-
     this.data.set('enemies', this.enemies_group.getLength());
     this.scene_info.setText([
       'Spawn Rate:' + ENEMIE_SPAWN_TIMER,
@@ -287,16 +294,22 @@ export class MainScene extends Phaser.Scene {
           break;
       }
 
-      console.log(position)
-
-      const enemie = new Enemie(this, position['x'], position['y'], 100, 100, this.castle);
-      this.physics.moveToObject(enemie, this.castle, 50);
+      const enemie_id = (Math.round(Math.random() * 10) === 1) ? {name: "boss", life: 5} : {name:"slime", life: 2}
+      const enemie = new Enemie(this, position['x'], position['y'], enemie_id.life, this.castle, "", enemie_id.name);
+      this.physics.moveToObject(enemie, this.castle, Math.random() * 200);
       this.enemie_creation_timer -= ENEMIE_SPAWN_TIMER * 2;
       this.enemies_group.add(enemie);
-
       let collider = this.physics.add.overlap(enemie, this.castle, function (action) {
         action.body.stop();
         this.physics.world.removeCollider(collider);
+        this.health -= 2;
+        this.castle_health.decrease(2);
+        this.camera.shake(100, 0.01);
+        this.camera.flash(20, 255, 0, 0);
+        if(this.health <= 0) {
+          console.log(this.health);
+          this.scene.restart(this);          
+        }
         enemie.destroy();
 
       }, null, this);
@@ -307,9 +320,10 @@ export class MainScene extends Phaser.Scene {
     // -----------------------
 
     this.data.set("money", this.money)
+    this.data.set("time", TIME_REMAINING - this.game.getFrame())
     this.text.x = (this.game.renderer.width - `Money:  ${this.data.get('money')}  Difficulty: ${this.data.get('difficulty')} Score: ${this.data.get('score')}`.length * 10 - 300);
     this.text.setText([
-      'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Score: ' + this.data.get('score')
+      'Money: ' + this.data.get('money') + '    ' + 'Time Remaining: ' + this.data.get('time') + '    ' + 'Score: ' + this.data.get('score')
     ]);
 
     // ----- CHEAT RELATED / SHORT CUTS -----
