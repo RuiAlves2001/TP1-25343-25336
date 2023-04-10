@@ -5,10 +5,10 @@ import { Enemie } from "../enemie";
 
 
 export class WinGame extends Phaser.Scene {
-  constructor(gameover) {
-    super({ key: "GameOver", active: true })
-    this.gameover = gameover;
-    this.game_over_group = gameover ? this.gameover.add.group() : null;
+  constructor(wingame) {
+    super({ key: "wingame", active: true })
+    this.wingame = wingame;
+    this.game_over_group = wingame ? this.wingame.add.group() : null;
   }
 
   preload() {
@@ -30,9 +30,9 @@ export class WinGame extends Phaser.Scene {
     ).setVisible(false); 
     gameoverBg.setVisible(true);
 
-    this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 220, 'GAME OVER', { font: '100px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
+    this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 220, 'Congratulations\nYou win!', { font: '100px Arial', fill: '#fff', align: 'center' }).setOrigin(0.5).setDepth(2);
 
-    let tryagainGame = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Try Again >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
+    let tryagainGame = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Restart the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
     tryagainGame.setInteractive();
 
     tryagainGame.on("pointerdown", () => {
