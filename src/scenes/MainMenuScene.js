@@ -34,10 +34,14 @@ export class MainMenuScene extends Phaser.Scene {
     creditsButton.setInteractive()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     let textcredits = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, 'Code:\nDiogo Carvalho\nRui Alves \n\n\nMade with Phaser 3', { font: '30px Arial', fill: '#fff', align: 'center' }).setOrigin(0.5).setDepth(1);
 =======
     let textcredits = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2  , 'Code:\nDiogo Carvalho\nRui Alves \n\n\nMade with Phaser 3', { font: '30px Arial', fill: '#fff', align: 'center' }).setOrigin(0.5).setDepth(1);
 >>>>>>> menu_principal
+=======
+    let textcredits = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, 'Code:\nDiogo Carvalho\nRui Alves \n\n\nMade with Phaser 3', { font: '30px Arial', fill: '#fff', align: 'center' }).setOrigin(0.5).setDepth(1);
+>>>>>>> Create_menu
     textcredits.setVisible(false);
 
     let hoverSprite = this.add.sprite(100, 100, "player").setScale(1);
@@ -56,10 +60,14 @@ export class MainMenuScene extends Phaser.Scene {
     musicmode.setVisible(false);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Create_menu
     let voltarmenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 160, '< Back >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     voltarmenu.setInteractive();
     voltarmenu.setVisible(false);
 
+<<<<<<< HEAD
     playButton.on("pointerdown", () => {
       optionsButton.setVisible(false);
       playButton.setVisible(false);
@@ -75,6 +83,12 @@ export class MainMenuScene extends Phaser.Scene {
       playButton.setVisible(false);
       creditsButton.setVisible(false); 
 >>>>>>> menu_principal
+=======
+    playButton.on("pointerdown", () => {
+      optionsButton.setVisible(false);
+      playButton.setVisible(false);
+      creditsButton.setVisible(false);
+>>>>>>> Create_menu
       alternativemode.setVisible(true);
       alternativemode.setActive(true);
       classicmode.setVisible(true);
@@ -139,10 +153,14 @@ export class MainMenuScene extends Phaser.Scene {
     })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
   
 >>>>>>> menu_principal
+=======
+
+>>>>>>> Create_menu
     //Botton credits
     creditsButton.on("pointerdown", () => {
       creditsButton.setVisible(false);
@@ -188,15 +206,22 @@ export class MainMenuScene extends Phaser.Scene {
     })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     
 >>>>>>> menu_principal
+=======
+
+>>>>>>> Create_menu
     //ativar e desativar musica
 
     let musictocar = this.sound.play("title_music");
     musicmode.on("pointerdown", () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Create_menu
       if (musictocar == true) {
         musicmode.setText('< Music: Off >');
         musictocar = false;
@@ -207,6 +232,7 @@ export class MainMenuScene extends Phaser.Scene {
         musicmode.setText('< Music: On >');
         this.sound.play("title_music");
       }
+<<<<<<< HEAD
 =======
       if(musictocar == true){
         musicmode.setText('< Music: Off >');
@@ -219,6 +245,8 @@ export class MainMenuScene extends Phaser.Scene {
           this.sound.play("title_music");
         }
 >>>>>>> menu_principal
+=======
+>>>>>>> Create_menu
     });
 
 

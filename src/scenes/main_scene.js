@@ -221,6 +221,7 @@ export class MainScene extends Phaser.Scene {
 
     this.ui_menu_group = this.add.group(); // TO BE USED IN CAMERA IGNORE SHENANIGANS
 <<<<<<< HEAD
+<<<<<<< HEAD
     let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
     this.camera.ignore(opentab);
     let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
@@ -230,15 +231,25 @@ export class MainScene extends Phaser.Scene {
     let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: 'bold 20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
     let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: 'bold 20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
 >>>>>>> menu_principal
+=======
+    let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
+    this.camera.ignore(opentab);
+    let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
+>>>>>>> Create_menu
     let creditsBackground = this.add.rectangle(
       150,
       450,
       300,
       900,
       '#4e8545',
+<<<<<<< HEAD
       0.8
     ).setVisible(false);
 <<<<<<< HEAD
+=======
+      0.7
+    ).setVisible(false);
+>>>>>>> Create_menu
     const turrets = get_turrets();
 
     // ---- SIDE MENU TURRET ----
@@ -265,6 +276,7 @@ export class MainScene extends Phaser.Scene {
       'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Score: ' + this.data.get('score')
     ]);
 
+<<<<<<< HEAD
 =======
     let pauseBackground = this.add.rectangle(
       800,
@@ -331,6 +343,8 @@ export class MainScene extends Phaser.Scene {
    
     
 >>>>>>> menu_principal
+=======
+>>>>>>> Create_menu
     //this.i=0;
 
     // let hoverSprite = this.add.sprite(100, 100, "player").setScale(1).setDepth(5);
@@ -344,6 +358,7 @@ export class MainScene extends Phaser.Scene {
 
     let pause_label = this.add.image(this.game.renderer.width - 75, 10, "btn_pause").setOrigin(0).setDepth(3).setScale(0.1);
     pause_label.setInteractive();
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -369,16 +384,22 @@ export class MainScene extends Phaser.Scene {
     });
 
 >>>>>>> menu_principal
+=======
+>>>>>>> Create_menu
     pause_label.on("pointerdown", () => {
       if (gameIsPaused == false) {
         this.scene.pause();
         this.scene.launch('PauseScene');
         gameIsPaused = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Create_menu
         // sd
       }
     });
     this.camera.ignore(pause_label)
+<<<<<<< HEAD
 =======
         list.forEach(unpause => {
           pauseBackground.setVisible(true);
@@ -439,6 +460,8 @@ export class MainScene extends Phaser.Scene {
     })
 
 >>>>>>> menu_principal
+=======
+>>>>>>> Create_menu
     this.camera.ignore(this.ui_menu_group)
     // ---- END OF UI ----
 
