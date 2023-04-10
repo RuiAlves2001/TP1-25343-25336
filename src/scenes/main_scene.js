@@ -5,7 +5,7 @@ import { Enemie } from "../enemie";
 import { BaseTurret } from "../base_turret";
 import { UiMenu } from "./ui_menu";
 import { HealthBar } from "../health_bar";
-import { get_turret } from "../utils";
+import { get_turret, get_turrets } from "../utils";
 
 const MODES = {
   Classic: 0,
@@ -26,7 +26,8 @@ const KEYS = {
   TOWER_1: Phaser.Input.Keyboard.KeyCodes.ONE,
   TOWER_2: Phaser.Input.Keyboard.KeyCodes.TWO,
   TOWER_3: Phaser.Input.Keyboard.KeyCodes.THREE,
-  TOWER_4: Phaser.Input.Keyboard.KeyCodes.FOUR
+  TOWER_4: Phaser.Input.Keyboard.KeyCodes.FOUR,
+  SIDE_TAB: Phaser.Input.Keyboard.KeyCodes.T
 }
 
 
@@ -36,8 +37,8 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('turret_head', 'assets/turret_head.png');
-    this.load.image('turret_body', 'assets/turret_body.png');
+    this.load.image('turret_head', 'assets/wood_tower.png');
+    this.load.image('turret_body', 'assets/tower_base.png');
     this.load.image('turret_laser', 'assets/head_laser.png')
     this.load.image('player', 'assets/player_new.png')
     this.load.image('tile_grass', 'assets/grass.png')
@@ -47,7 +48,7 @@ export class MainScene extends Phaser.Scene {
     this.load.image('slime', 'assets/slime/slime.png');
     this.load.image('slime-1', 'assets/slime/slime_1.png');
     this.load.image('enemie_damaged', 'assets/_Slime_hit.png')
-    this.load.image('turret_fire', 'assets/fire_turret_head.png');
+    this.load.image('turret_fire', 'assets/flame_tower.png');
     this.load.image('fire', 'assets/fire.png');
     this.load.image('canon', 'assets/canon.png')
     this.load.image('laser', 'assets/laser.png')
@@ -58,6 +59,13 @@ export class MainScene extends Phaser.Scene {
     this.load.image("boss-3", "assets/bossman/boss_3.png");
     this.load.image("boss-2", "assets/bossman/boss_2.png");
     this.load.image("boss-1", "assets/bossman/boss_1.png");
+    this.load.image("sniper", "assets/sniper_tower.png");
+    this.load.image("sniper-bullet", "assets/sniper_bullet.png");
+    this.load.image("sniper-trail", "assets/sniper_bullet_trail.png");
+    this.load.image("v_wood", "assets/vis_wood_tower.png")
+    this.load.image("v_laser", "assets/vis_laser_tower.png")
+    this.load.image("v_flame", "assets/vis_flame_tower.png")
+    this.load.image("v_sniper", "assets/vis_sniper_tower.png")  
   }
 
   init(data) {
@@ -76,13 +84,16 @@ export class MainScene extends Phaser.Scene {
     // ------ GAME VARIABLES ------
     this.money = MODE === MODES.Classic ? 40 : 0;
     this.currently_selected_tower = 0;
-    ENEMIE_SPAWN_TIMER = (TIME_REMAINING - this.game.getFrame()) / 500
+    this.t = 0;
+    ENEMIE_SPAWN_TIMER = 50
+    let ost = this.sound.play("ost");
+    this.sound.volume = 0.2    
 
     // ------ BACKGROUND / MAP RELATED ------
-    this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 256, height: 64 });
+    this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 512, height: 64 });
     this.tiles = this.map.addTilesetImage('tile_grass');
     this.layer = this.map.createBlankLayer('layer', this.tiles);
-    this.layer.randomize(0, 0, 128, 128, [0, 1, 2, 3]); // Wall above the water
+    this.layer.randomize(0, 0, 128, 128, [0, 1, 2, 3, 4, 5, 6, 7]); // Wall above the water
     // ------ GAME OBJECT RELATED ------
     this.turrets = this.physics.add.group()
     this.player = new Player(this, 64 * 32, 64 * 32);
@@ -97,6 +108,15 @@ export class MainScene extends Phaser.Scene {
 
     Object.keys(KEYS).map((key) => {
       KEYS[key] = this.input.keyboard.addKey(KEYS[key])
+    })
+
+    this.events.on("resume", (_, f) => {
+      this.currently_selected_tower = 0;
+      if (f) {
+        this.currently_selected_tower = f.selected 
+      }
+      this.player.set_tower(this.currently_selected_tower)
+      this.scene_info.x = 50
     })
 
     // this.ui_left_tab_menu = new UiMenu(this);
@@ -114,6 +134,16 @@ export class MainScene extends Phaser.Scene {
     // the classic game mode has no playable character and the camera is fixed
     // the normal game mode has a controllable character that can shoot and build turrets
 
+    this.events.on("currently_selected", (id) => {
+      console.log("THIS")
+      this.currently_selected_tower = id
+    })
+
+    KEYS.SIDE_TAB.on('down', () => {
+      this.scene.launch('SideScene', {id: this.currently_selected_tower});
+      this.scene_info.x += 270
+    })
+
     KEYS.TOWER_1.on('down', () => {
       this.currently_selected_tower = 0
     })
@@ -127,7 +157,7 @@ export class MainScene extends Phaser.Scene {
     })
 
     KEYS.TOWER_4.on('down', () => {
-      this.currently_selected_tower = 1
+      this.currently_selected_tower = 3
     })
 
     if (MODE == MODES.Classic) {
@@ -147,6 +177,7 @@ export class MainScene extends Phaser.Scene {
       this.camera_ui.setVisible(false);
       this.castle.x = this.window.width / 2;
       this.castle.y = this.window.height / 2;
+      this.castle_health
       // this.camera.setViewport(this.castle.x - this.window.width, this.castle.y - this.window.height, this.window.width, this.window.height)
       //this.camera.setPosition(this.castle.x, this.castle.y);
     } else {
@@ -176,8 +207,6 @@ export class MainScene extends Phaser.Scene {
     this.camera_ui.visible = true
 
     this.ui_menu_group = this.add.group(); // TO BE USED IN CAMERA IGNORE SHENANIGANS
-    this.keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
-
     let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
     let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
     let creditsBackground = this.add.rectangle(
@@ -188,32 +217,23 @@ export class MainScene extends Phaser.Scene {
       '#4e8545',
       0.7
     ).setVisible(false);
-    let turrethead = this.add.image(30, 30, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturrethead = this.add.text(20, 222, 'Price: 100€ | Damage: 20hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
-    let turretbody = this.add.image(54, 247, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturretbody = this.add.text(20, 439, 'Price: 200€ | Damage: 50hp', { font: '16px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
-    var keyObj = this.input.keyboard.addKey('t');  // Get key object
-    this.ui_menu_group.addMultiple([turrethead, turrethead, turretbody, textturretbody, opentab, returntab, creditsBackground])
-    keyObj.on('down', function (event) {
-      opentab.setVisible(false);
-      returntab.setVisible(true);
-      textturrethead.setVisible(true);
-      textturretbody.setVisible(true);
-      turrethead.setVisible(true);
-      turretbody.setVisible(true);
-      turrethead.setInteractive(true);
-      turretbody.setInteractive(true);
-      creditsBackground.setVisible(true);
-    });
-    keyObj.on('up', function (event) {
-      opentab.setVisible(true);
-      returntab.setVisible(false);
-      textturrethead.setVisible(false);
-      textturretbody.setVisible(false);
-      turrethead.setVisible(false);
-      turretbody.setVisible(false);
-      creditsBackground.setVisible(false);
-    });
+    const turrets = get_turrets();
+
+    // ---- SIDE MENU TURRET ----
+
+    // let turrethead = this.add.image(30, 20, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    // let textturrethead = this.add.text(65, 192, 'basic turrent\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    // let turretbody = this.add.image(54, 217, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    // let textturretbody = this.add.text(65, 409, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    // let turret_fire = this.add.image(100, 500, "turret_fire").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    // let textturret_fire = this.add.text(65, 631, 'fire turret\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    // let turretbody1 = this.add.image(54, 671, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
+    // let textturretbody1 = this.add.text(65, 853, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
+    // var keyObj = this.input.keyboard.addKey('t');  // Get key object
+    // this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turret_fire, textturret_fire, turretbody1, textturretbody1, opentab, returntab, creditsBackground])
+    // KEYS.SIDE_TAB.on('down', function (event) {
+    //   this.scene.launch("SideScene");
+    // });
 
     this.data.set('money', 0);
     this.data.set('difficulty', 0);
@@ -233,7 +253,7 @@ export class MainScene extends Phaser.Scene {
       gameIsPaused = false
     })
 
-    let pause_label = this.add.image(this.game.renderer.width - 75, 10, "btn_pause").setOrigin(0).setDepth(0).setScale(0.1);
+    let pause_label = this.add.image(this.game.renderer.width - 75, 10, "btn_pause").setOrigin(0).setDepth(3).setScale(0.1);
     pause_label.setInteractive();
     pause_label.on("pointerdown", () => {
       if (gameIsPaused == false) {
@@ -271,10 +291,15 @@ export class MainScene extends Phaser.Scene {
     })
 
     this.castle_health = new HealthBar(this, 32 * 32 - 32, 32 * 32 + 32, 124);
+    if(MODE === MODES.Classic ) {
+      this.castle_health = new HealthBar(this, this.window.width/2, this.window.height/2+256, 124);
+      console.log(this.castle_health)
+    }
 
   }
 
   update() {
+    this.t += 1;
     this.data.set('enemies', this.enemies_group.getLength());
     this.scene_info.setText([
       'Spawn Rate:' + ENEMIE_SPAWN_TIMER,
@@ -333,12 +358,16 @@ export class MainScene extends Phaser.Scene {
       this.events.emit("ADD_MONEY");
     }
 
+    if (KEYS.SIDE_TAB.isDown) {
+      this.scene.launch("SideMenu")
+    }
+
     // ----- ENEMIES RELATED -----
 
     this.enemie_creation_timer++
     if (this.enemie_creation_timer > Math.random() * ENEMIE_SPAWN_TIMER) {
       ENEMIE_SPAWN_TIMER -= Math.min(ENEMIE_SPAWN_TIMER, 0.02);
-      ENEMIE_SPAWN_TIMER = Math.max(ENEMIE_SPAWN_TIMER, 2);
+      ENEMIE_SPAWN_TIMER = Math.max(ENEMIE_SPAWN_TIMER, 1);
       this.enemies_amount++
       let position = {};
 
@@ -375,7 +404,8 @@ export class MainScene extends Phaser.Scene {
         this.camera.flash(20, 255, 0, 0);
         if (this.health <= 0) {
           console.log(this.health);
-          this.scene.restart(this);
+          this.scene.launch("GameOver");
+          this.scene.stop("MainScene")
         }
         enemie.destroy();
 
@@ -385,15 +415,15 @@ export class MainScene extends Phaser.Scene {
     this.camera_ui.ignore(this.enemies_group)
     this.camera_ui.ignore(this.turrets)
     // -----------------------
-    if (TIME_REMAINING - this.game.getFrame() <= 0) {
-      this.scene.launch("MainMenuScene");
+    if (TIME_REMAINING - this.t <= 0) {
+      this.scene.launch("wingame");
       this.scene.stop("MainScene");
     }
     this.data.set("money", this.money)
-    this.data.set("time", TIME_REMAINING - this.game.getFrame())
+    this.data.set("time", TIME_REMAINING - this.t)
     this.text.x = (this.game.renderer.width - `Money:  ${this.data.get('money')}  Difficulty: ${this.data.get('difficulty')} Score: ${this.data.get('score')}`.length * 10 - 300);
     this.text.setText([
-      'Money: ' + this.data.get('money') + '    ' + 'Time Remaining: ' + this.data.get('time') + '    ' + 'Score: ' + this.data.get('score')
+      'Money: ' + this.data.get('money') + '    ' + 'Time Remaining: ' + this.data.get('time')
     ]);
 
     // ----- CHEAT RELATED / SHORT CUTS -----

@@ -16,7 +16,7 @@ export class Enemie extends Physics.Arcade.Sprite {
 
   damage(amount) {
     this.health -= amount;
-    this.setTexture(`${this.id}-${this.health}`);
+    if(this.health % 1 === 0) this.setTexture(`${this.id}-${this.health}`);
     if(this.health <= 0) {
       this.is_dead()
     }

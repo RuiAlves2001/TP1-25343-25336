@@ -28,57 +28,53 @@ export class PauseScene extends Phaser.Scene {
     // });
 
     choiseLabel.on("pointerdown", () => {
-        console.log("HEllo WOrld")
-
         if (gameIsPaused == true) {
             gameIsPaused = false;
             this.scene.resume("MainScene")
             this.scene.stop(this)
-
-        list.forEach(unpause => {
-          unpause.setVisible(false);
-          unpause.setActive(false);
-        })
       }
     });
 
-    choiseLabel.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = choiseLabel.x - choiseLabel.width;
-      hoverSprite.y = choiseLabel.y;
-    })
-    choiseLabel.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
+    // choiseLabel.on("pointerover", () => {
+    //   hoverSprite.setVisible(true);
+    //   hoverSprite.play("walk");
+    //   hoverSprite.x = choiseLabel.x - choiseLabel.width;
+    //   hoverSprite.y = choiseLabel.y;
+    // })
+    // choiseLabel.on("pointerout", () => {
+    //   hoverSprite.setVisible(false);
+    // })
 
     returnMenu.on("pointerdown", () => {
-      //inserir return menu
+      this.scene.stop("MainScene")
+      this.scene.stop("PauseScene")
+      this.scene.launch("MainMenuScene");
     });
 
-    returnMenu.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = returnMenu.x - returnMenu.width;
-      hoverSprite.y = returnMenu.y;
-    })
-    returnMenu.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
+    // returnMenu.on("pointerover", () => {
+    //   hoverSprite.setVisible(true);
+    //   hoverSprite.play("walk");
+    //   hoverSprite.x = returnMenu.x - returnMenu.width;
+    //   hoverSprite.y = returnMenu.y;
+    // })
+    // returnMenu.on("pointerout", () => {
+    //   hoverSprite.setVisible(false);
+    // })
 
     restartGame.on("pointerdown", () => {
-      //inserir return menu
+      this.scene.launch("MainScene");
+      this.scene.stop("PauseScene")
     });
 
-    restartGame.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = restartGame.x - restartGame.width;
-      hoverSprite.y = restartGame.y;
-    })
-    restartGame.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
+    // restartGame.on("pointerover", () => {
+    //   hoverSprite.setVisible(true);
+    //   hoverSprite.play("walk");
+    //   hoverSprite.x = restartGame.x - restartGame.width;
+    //   hoverSprite.y = restartGame.y;
+    // })
+    // restartGame.on("pointerout", () => {
+    //   hoverSprite.setVisible(false);
+    // })
   }
 
 }

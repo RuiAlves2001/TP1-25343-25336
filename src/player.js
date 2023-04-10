@@ -34,7 +34,13 @@ export class Player extends Physics.Arcade.Sprite {
       this.shoot(this.scene.input.activePointer)
     })
 
+    this.turret_type = 0;
+
     this.scene.events.on('k', this.preload, this);
+  }
+
+  set_tower(tower) {
+    this.turret_type = tower
   }
 
   preload() {
@@ -43,11 +49,9 @@ export class Player extends Physics.Arcade.Sprite {
 
   spawn_turret(money) {
     if (Phaser.Input.Keyboard.JustDown(KEYS.ACTION)) {
-      let turret_type = Math.round(Math.random())
-      turret_type = 0;
-      let turret_data = get_turret(turret_type);
+      let turret_data = get_turret(this.turret_type);
       if (money - turret_data.price >= 0) {
-        let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, turret_type);
+        let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, this.turret_type);
         return [t, money - turret_data.price]
       }
     }

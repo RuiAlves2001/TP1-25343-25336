@@ -11,3 +11,4 @@ The rules are quite simple, use the players gun and towers in order to defend th
 - **m** to add money
 - **left mouse** to shoot
 - **mouse** point
+- **t** to pick a tower
