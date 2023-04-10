@@ -1,0 +1,10 @@
+# 
+These game's theme is Survivor-like tower defense. How does this work though? In typical Survivors-like the enemies come from all sides of the screen to attack the player. That's where tower defense component comes into play since the enemies aren't after the player but targeting the tower. 
+Therefore the player has to defend not himselft but the tower, to help, you can use a tower defense staple that is building towers in order to better defend the castle.
+
+## How to play
+## Controls
+- *[w, a, s, d]* to move the player
+- *x* to decrease spawn
+- *z* to increase spawn
+- *m* to add money

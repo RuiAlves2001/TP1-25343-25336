@@ -5,6 +5,7 @@ import { Enemie } from "../enemie";
 import { BaseTurret } from "../base_turret";
 import { UiMenu } from "./ui_menu";
 import { HealthBar } from "../health_bar";
+import { get_turret } from "../utils";
 
 const MODES = {
   Classic: 0,
@@ -12,18 +13,20 @@ const MODES = {
 }
 
 const TILE_SIZE = 64;
-const MODE = MODES.RunNGun
+let MODE = MODES.Classic
 let ENEMIE_SPAWN_TIMER = 50;
 const MAX_SCROLL = 3
 const MIN_SCROLL = 0.5
-let TIME_REMAINING
+const TIME_REMAINING = 60 * 5 * 100; // 5 minutes
 
 const KEYS = {
-  INCREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.ONE,
-  DECREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.TWO,
-  LEFT: Phaser.Input.Keyboard.KeyCodes.A,
-  RIGHT: Phaser.Input.Keyboard.KeyCodes.D,
-  ACTION: Phaser.Input.Keyboard.KeyCodes.SPACE
+  INCREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.X,
+  DECREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.Z,
+  ADD_MONEY: Phaser.Input.Keyboard.KeyCodes.M,
+  TOWER_1: Phaser.Input.Keyboard.KeyCodes.ONE,
+  TOWER_2: Phaser.Input.Keyboard.KeyCodes.TWO,
+  TOWER_3: Phaser.Input.Keyboard.KeyCodes.THREE,
+  TOWER_4: Phaser.Input.Keyboard.KeyCodes.FOUR
 }
 
 
@@ -57,10 +60,24 @@ export class MainScene extends Phaser.Scene {
     this.load.image("boss-1", "assets/bossman/boss_1.png");
   }
 
+  init(data) {
+    console.log(data)
+
+    switch (data.id) {
+      case 0:
+        MODE = MODES.Classic
+        break
+      default:
+        MODE = MODES.RunNGun
+    }
+  }
+
   create() {
     // ------ GAME VARIABLES ------
-    this.money = 0;
-    TIME_REMAINING = 60*5*120; // 5 minutes
+    this.money = MODE === MODES.Classic ? 40 : 0;
+    this.currently_selected_tower = 0;
+    ENEMIE_SPAWN_TIMER = (TIME_REMAINING - this.game.getFrame()) / 500
+
     // ------ BACKGROUND / MAP RELATED ------
     this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 256, height: 64 });
     this.tiles = this.map.addTilesetImage('tile_grass');
@@ -68,15 +85,19 @@ export class MainScene extends Phaser.Scene {
     this.layer.randomize(0, 0, 128, 128, [0, 1, 2, 3]); // Wall above the water
     // ------ GAME OBJECT RELATED ------
     this.turrets = this.physics.add.group()
-    this.player = new Player(this, 64*32, 64*32);
+    this.player = new Player(this, 64 * 32, 64 * 32);
     this.camera_ui = this.cameras.add(0, 0, 1600, 900);
     this.camera = this.cameras.main;
-    this.camera.setBounds(0,0,64*64,64*64)
+    this.camera.setBounds(0, 0, 64 * 64, 64 * 64)
     // this.cameras.main.setViewport(0,0,1600,900);
-    this.castle = this.physics.add.sprite(64*32, 64*32, "castle");
+    this.castle = this.physics.add.sprite(64 * 32, 64 * 32, "castle");
     this.input.setPollAlways();
     this.window = this.sys.game.canvas;
     this.health = 124;
+
+    Object.keys(KEYS).map((key) => {
+      KEYS[key] = this.input.keyboard.addKey(KEYS[key])
+    })
 
     // this.ui_left_tab_menu = new UiMenu(this);
     // this.ui_left_tab_menu.create();
@@ -93,11 +114,41 @@ export class MainScene extends Phaser.Scene {
     // the classic game mode has no playable character and the camera is fixed
     // the normal game mode has a controllable character that can shoot and build turrets
 
+    KEYS.TOWER_1.on('down', () => {
+      this.currently_selected_tower = 0
+    })
+
+    KEYS.TOWER_2.on('down', () => {
+      this.currently_selected_tower = 1
+    })
+
+    KEYS.TOWER_3.on('down', () => {
+      this.currently_selected_tower = 2
+    })
+
+    KEYS.TOWER_4.on('down', () => {
+      this.currently_selected_tower = 1
+    })
+
     if (MODE == MODES.Classic) {
+      this.player.setVisible(false);
+
       this.input.on('pointerdown', (pointer) => {
-        let t = new BaseTurret(this.physics.world, this, pointer.x, pointer.y, 300, true, Math.round(Math.random()));
-        this.turrets.add(t);
+        const turret_config = get_turret(this.currently_selected_tower)
+        if (turret_config.price <= this.money) {
+          this.money -= turret_config.price;
+          let t = new BaseTurret(this.physics.world, this, pointer.x, pointer.y, 300, true, this.currently_selected_tower);
+          this.turrets.add(t);
+        } else {
+          this.camera.shake(100, 0.005)
+        }
       })
+      this.camera.zoom = 1;
+      this.camera_ui.setVisible(false);
+      this.castle.x = this.window.width / 2;
+      this.castle.y = this.window.height / 2;
+      // this.camera.setViewport(this.castle.x - this.window.width, this.castle.y - this.window.height, this.window.width, this.window.height)
+      //this.camera.setPosition(this.castle.x, this.castle.y);
     } else {
       this.input.manager.canvas.style.cursor = "none";
       this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
@@ -112,7 +163,7 @@ export class MainScene extends Phaser.Scene {
     if (MODE != MODES.RunNGun) this.crossair.setVisible(false)
     this.bullets = this.add.group()
     this.scene_info = this.add.text(50, this.window.height - 50, '', { font: '20px monospace', fill: '#00ff00' })
-
+    if (MODE === MODES.Classic) this.bullets.setVisible(false);
     // ---- UI ----
     // TODO: need to transfer the UIMENU scene into here
     // ui will be managed through the main_scene
@@ -197,29 +248,29 @@ export class MainScene extends Phaser.Scene {
     // ---- END OF UI ----
 
     const incMoney = () => {
-      console.log("MONEY")    
+      console.log("MONEY")
       this.money += 1;
     }
 
-    this.events.addListener("killed", function() {
+    this.events.addListener("killed", function () {
       console.log("KILLED")
       incMoney();
     })
 
-    this.events.addListener("INCREASE_SPAWN_RATE", function() {
+    this.events.addListener("INCREASE_SPAWN_RATE", function () {
       ENEMIE_SPAWN_TIMER = Math.max(0, ENEMIE_SPAWN_TIMER - 0.1)
     })
 
-    this.events.addListener("DECREASE_SPAWN_RATE", function() {
+    this.events.addListener("DECREASE_SPAWN_RATE", function () {
       console.log("DECREASE")
       ENEMIE_SPAWN_TIMER += 1
     })
 
-    this.events.addListener("ADD_MONEY", function() {
+    this.events.addListener("ADD_MONEY", function () {
       incMoney();
     })
 
-    this.castle_health = new HealthBar(this, 32*32-32, 32*32+32, 124);
+    this.castle_health = new HealthBar(this, 32 * 32 - 32, 32 * 32 + 32, 124);
 
   }
 
@@ -234,7 +285,7 @@ export class MainScene extends Phaser.Scene {
 
       this.player.update();
       let tm = this.player.spawn_turret(this.money);
-      if(tm) {
+      if (tm) {
         this.money = tm[1]
       }
       this.crossair.x = this.input.activePointer.worldX
@@ -266,6 +317,22 @@ export class MainScene extends Phaser.Scene {
       }
     })
 
+    // ----- CHEATS --------------
+
+    if (KEYS.INCREASE_SPAWN_RATE.isDown) {
+      console.log("+++")
+      this.events.emit("INCREASE_SPAWN_RATE");
+    }
+
+    if (KEYS.DECREASE_SPAWN_RATE.isDown) {
+      console.log("---")
+      this.events.emit("DECREASE_SPAWN_RATE");
+    }
+
+    if (KEYS.ADD_MONEY.isDown) {
+      this.events.emit("ADD_MONEY");
+    }
+
     // ----- ENEMIES RELATED -----
 
     this.enemie_creation_timer++
@@ -278,23 +345,23 @@ export class MainScene extends Phaser.Scene {
       switch (Math.ceil(Math.random() * 4)) {
         case 1:
           position['x'] = -TILE_SIZE
-          position['y'] = Math.ceil(Math.random() * 64*64)
+          position['y'] = Math.ceil(Math.random() * 64 * 64)
           break;
         case 2:
-          position['x'] = TILE_SIZE + (64*64)
-          position['y'] = Math.ceil(Math.random() * 64*64)
+          position['x'] = TILE_SIZE + (64 * 64)
+          position['y'] = Math.ceil(Math.random() * 64 * 64)
           break;
         case 3:
           position['y'] = -TILE_SIZE
-          position['x'] = Math.ceil(Math.random() * 64*64)
+          position['x'] = Math.ceil(Math.random() * 64 * 64)
           break;
         default:
-          position['y'] = TILE_SIZE + (64*64)
-          position['x'] = Math.ceil(Math.random() * 64*64)
+          position['y'] = TILE_SIZE + (64 * 64)
+          position['x'] = Math.ceil(Math.random() * 64 * 64)
           break;
       }
 
-      const enemie_id = (Math.round(Math.random() * 10) === 1) ? {name: "boss", life: 5} : {name:"slime", life: 2}
+      const enemie_id = (Math.round(Math.random() * 10) === 1) ? { name: "boss", life: 5 } : { name: "slime", life: 2 }
       const enemie = new Enemie(this, position['x'], position['y'], enemie_id.life, this.castle, "", enemie_id.name);
       this.physics.moveToObject(enemie, this.castle, Math.random() * 200);
       this.enemie_creation_timer -= ENEMIE_SPAWN_TIMER * 2;
@@ -306,9 +373,9 @@ export class MainScene extends Phaser.Scene {
         this.castle_health.decrease(2);
         this.camera.shake(100, 0.01);
         this.camera.flash(20, 255, 0, 0);
-        if(this.health <= 0) {
+        if (this.health <= 0) {
           console.log(this.health);
-          this.scene.restart(this);          
+          this.scene.restart(this);
         }
         enemie.destroy();
 
@@ -318,7 +385,10 @@ export class MainScene extends Phaser.Scene {
     this.camera_ui.ignore(this.enemies_group)
     this.camera_ui.ignore(this.turrets)
     // -----------------------
-
+    if (TIME_REMAINING - this.game.getFrame() <= 0) {
+      this.scene.launch("MainMenuScene");
+      this.scene.stop("MainScene");
+    }
     this.data.set("money", this.money)
     this.data.set("time", TIME_REMAINING - this.game.getFrame())
     this.text.x = (this.game.renderer.width - `Money:  ${this.data.get('money')}  Difficulty: ${this.data.get('difficulty')} Score: ${this.data.get('score')}`.length * 10 - 300);
@@ -328,6 +398,6 @@ export class MainScene extends Phaser.Scene {
 
     // ----- CHEAT RELATED / SHORT CUTS -----
 
-    
+
   }
 }
