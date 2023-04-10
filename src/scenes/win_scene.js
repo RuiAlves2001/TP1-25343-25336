@@ -29,8 +29,9 @@ export class WinGame extends Phaser.Scene {
         tryagainGame.setInteractive();
 
         tryagainGame.on("pointerdown", () => {
-            console.log("restart")
-            this.scene.restart("MainScene");
+            this.scene.stop("MainScene")
+            this.scene.stop(this)
+            this.scene.start("MainScene");
         });
 
         tryagainGame.on("pointerover", () => {
@@ -47,8 +48,9 @@ export class WinGame extends Phaser.Scene {
         choiseLabel.setInteractive();
 
         choiseLabel.on("pointerdown", () => {
-            console.log("restart")
             this.scene.launch("MainMenuScene")
+            this.scene.stop("MainScene")
+            this.scene.stop(this)
         });
 
         choiseLabel.on("pointerover", () => {
