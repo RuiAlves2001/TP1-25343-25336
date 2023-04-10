@@ -15,7 +15,7 @@ let KEYS = {
 }
 
 export class Player extends Physics.Arcade.Sprite {
-  constructor(scene, x, y) {
+  constructor(scene, x, y, canShoot) {
     super(scene, x, y, 'player');
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.canon = this.scene.add.sprite(x, y, 'canon');
@@ -31,6 +31,7 @@ export class Player extends Physics.Arcade.Sprite {
     this.acc = 200;
     this.scene.input.activePointer.updateWorldPoint(this.scene.cameras.main);
     this.scene.input.on('pointerdown', (pointer) => {
+      if(!canShoot) return
       this.shoot(this.scene.input.activePointer)
     })
 

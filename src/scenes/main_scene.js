@@ -103,7 +103,7 @@ export class MainScene extends Phaser.Scene {
     this.layer.randomize(0, 0, 128, 128, [0, 1, 2, 3, 4, 5, 6, 7]); // Wall above the water
     // ------ GAME OBJECT RELATED ------
     this.turrets = this.physics.add.group()
-    this.player = new Player(this, 64 * 32, 64 * 32);
+    this.player = new Player(this, 64 * 32, 64 * 32, (MODE === MODES.RunNGun));
     this.camera_ui = this.cameras.add(0, 0, 1600, 900);
     this.camera = this.cameras.main;
     this.camera.setBounds(0, 0, 64 * 64, 64 * 64)
@@ -221,6 +221,7 @@ export class MainScene extends Phaser.Scene {
 
     this.ui_menu_group = this.add.group(); // TO BE USED IN CAMERA IGNORE SHENANIGANS
     let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
+    this.camera.ignore(opentab);
     let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
     let creditsBackground = this.add.rectangle(
       150,
@@ -255,6 +256,7 @@ export class MainScene extends Phaser.Scene {
     this.text.setText([
       'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Score: ' + this.data.get('score')
     ]);
+
     //this.i=0;
 
     // let hoverSprite = this.add.sprite(100, 100, "player").setScale(1).setDepth(5);
@@ -276,7 +278,7 @@ export class MainScene extends Phaser.Scene {
         // sd
       }
     });
-
+    this.camera.ignore(pause_label)
     this.camera.ignore(this.ui_menu_group)
     // ---- END OF UI ----
 
@@ -417,6 +419,9 @@ export class MainScene extends Phaser.Scene {
         this.camera.flash(20, 255, 0, 0);
         if (this.health <= 0) {
           console.log(this.health);
+
+          this.camera.ignore([this.scene_info, this.text, this.castle_health])
+
           this.scene.launch("GameOver");
           this.scene.pause("MainScene")
         }
@@ -438,6 +443,14 @@ export class MainScene extends Phaser.Scene {
     this.text.setText([
       'Money: ' + this.data.get('money') + '    ' + 'Time Remaining: ' + this.data.get('time')
     ]);
+
+    if(MODE === MODES.RunNGun) {
+      this.camera.ignore([this.text, this.scene_info])
+    }
+
+    if(MODE === MODES.Classic) {
+      this.player
+    }
 
     // ----- CHEAT RELATED / SHORT CUTS -----
 

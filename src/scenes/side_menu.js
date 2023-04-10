@@ -9,7 +9,6 @@ export class SideScene extends Phaser.Scene {
 
   init(data) {
     this.currently_selected = data.id;
-
   }
 
   create() {

@@ -16,7 +16,6 @@ export class MainMenuScene extends Phaser.Scene {
     this.load.image("player", "./assets/player_new.png");
     this.load.audio("title_music", "./assets/shuinvy-childhood.mp3")
     this.load.audio("ost", "assets/ost.mp3")
-
   }
 
   create() {
