@@ -60,15 +60,19 @@ export class BaseTurret extends Physics.Arcade.Group {
   update(ignore) {
     this.graphics.clear()
     //this.graphics.fillCircleShape(this.circle)
-    this.bullet_timer -= 1;
-    if (this.bullet_timer < 0 && this.current_selected_enemie != null) {
-      this.shoot(ignore)
-      this.bullet_timer += this.turret_config.fire_rate
+    if (this.current_selected_enemie === null) return
+    if (Phaser.Math.Distance.BetweenPoints(this.sprite_head, this.current_selected_enemie) < this.turret_config.range) {
+      this.bullet_timer -= 1;
+      if (this.bullet_timer < 0) {
+        this.shoot(ignore)
+        this.bullet_timer += this.turret_config.fire_rate
+      }
     }
   }
 
   shoot(ignore) {
     const scene = this.scene;
+
     // let _b = new Bullet(this.scene, this.x, this.y, this.current_selected_enemie, 0);
     // this.scene.add.existing(_b)
     // console.log(_b)
@@ -90,19 +94,21 @@ export class BaseTurret extends Physics.Arcade.Group {
       'energy: ' + this.sprite_head.getData('energy')
     ])
 
-    this.collider = scene.physics.add.overlap(_b, scene.enemies_group, function(action, target) {
+    const collider = scene.physics.add.overlap(_b, scene.enemies_group, function (action, target) {
       action.body.stop();
-      scene.physics.world.removeCollider(this.collider);
+      scene.physics.world.removeCollider(collider);
       _b.destroy();
       target.damage(this.bullet_config.damage)
       particles.destroy()
     }, null, this);
 
-    this.scene.time.addEvent({delay: this.bullet_config.lifetime, callback: () => {
-      scene.physics.world.removeCollider(this.collider);
-      _b.destroy()
-      particles.destroy()
-    }, callbackScope: this.scene, loop: false})
+    this.scene.time.addEvent({
+      delay: this.bullet_config.lifetime, callback: () => {
+        scene.physics.world.removeCollider(this.collider);
+        _b.destroy()
+        particles.destroy()
+      }, callbackScope: this.scene, loop: false
+    })
 
     ignore.ignore([emitter, particles, _b])
   }
@@ -120,7 +126,7 @@ export class BaseTurret extends Physics.Arcade.Group {
       return a[1] - b[1];
     })
 
-    if(targets_distance[0][0] > this.turret_config.range) return
+    if (targets_distance[0][0] > this.turret_config.range) return
     target = targets_distance[0][0];
 
     //if(Math.abs((target.x + target.y) - (this.sprite_body.x + this.sprite_body.y)) < this.range) {

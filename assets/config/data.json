@@ -17,7 +17,7 @@
     {
       "id": 1,
       "speed": 100,
-      "damage": 5,
+      "damage": 1,
       "size": 1,
       "asset": "fire",
       "spread":300,
@@ -26,7 +26,7 @@
         "size": 1,
         "speed": 100
       },
-      "lifetime": 5000
+      "lifetime": 2000
     },
     {
       "id": 2,
@@ -60,7 +60,7 @@
       "name": "Flameturret the baconizer.",
       "top_sprite": "turret_fire",
       "bottom_sprite": "turret_body",
-      "fire_rate": 10,
+      "fire_rate": 20,
       "energy": 1000,
       "base_bullet": 1,
       "range": 200,
@@ -74,7 +74,7 @@
       "fire_rate": 1,
       "energy": 1000,
       "base_bullet": 2,
-      "range": 200,
+      "range": 800,
       "price":200
     }
   ]

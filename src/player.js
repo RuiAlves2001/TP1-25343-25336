@@ -90,19 +90,7 @@ export class Player extends Physics.Arcade.Sprite {
       this.movement_right()
     }
 
-    if (KEYS.INCREASE_SPAWN_RATE.isDown) {
-      console.log("+++")
-      this.scene.events.emit("INCREASE_SPAWN_RATE");
-    }
-
-    if (KEYS.DECREASE_SPAWN_RATE.isDown) {
-      console.log("---")
-      this.scene.events.emit("DECREASE_SPAWN_RATE");
-    }
-
-    if(KEYS.ADD_MONEY.isDown) {
-      this.scene.events.emit("ADD_MONEY");
-    }
+   
   }
 
   movement_left() {
