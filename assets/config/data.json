@@ -4,12 +4,12 @@
       "id": 0,
       "speed": 1000,
       "damage": 2,
-      "size": 2,
+      "size": 1,
       "asset": "bullet",
       "spread": 0,
       "particles": {
         "asset": "smoke",
-        "size": 0.4,
+        "size": 0.1,
         "speed": 100
       },
       "lifetime": 1000
@@ -20,7 +20,7 @@
       "damage": 1,
       "size": 1,
       "asset": "fire",
-      "spread":300,
+      "spread":50,
       "particles": {
         "asset": "fire",
         "size": 1,
@@ -31,13 +31,27 @@
     {
       "id": 2,
       "speed": 2000,
-      "damage": 1,
-      "size": 2,
+      "damage": 0.05,
+      "size": 1,
       "asset": "bullet",
       "spread": 1,
       "particles": {
         "asset": "laser",
-        "size": 2,
+        "size": 0.1,
+        "speed": 200
+      },
+      "lifetime": 2000
+    },
+    {
+      "id": 3,
+      "speed": 4000,
+      "damage": 5,
+      "size": 2,
+      "asset": "sniper-bullet",
+      "spread": 1,
+      "particles": {
+        "asset": "sniper-trail",
+        "size": 1,
         "speed": 200
       },
       "lifetime": 2000
@@ -60,10 +74,10 @@
       "name": "Flameturret the baconizer.",
       "top_sprite": "turret_fire",
       "bottom_sprite": "turret_body",
-      "fire_rate": 20,
+      "fire_rate": 10,
       "energy": 1000,
       "base_bullet": 1,
-      "range": 200,
+      "range": 350,
       "price":100
     },
     {
@@ -72,10 +86,21 @@
       "top_sprite": "turret_laser",
       "bottom_sprite": "turret_body",
       "fire_rate": 1,
-      "energy": 1000,
+      "energy": 5000,
       "base_bullet": 2,
-      "range": 800,
+      "range": 500,
       "price":200
+    },
+    {
+      "id": 3,
+      "name": "Kill me Camper",
+      "top_sprite": "sniper",
+      "bottom_sprite": "turret_body",
+      "fire_rate": 200,
+      "energy":1000,
+      "base_bullet":3,
+      "range": 800,
+      "price": 300
     }
   ]
 }

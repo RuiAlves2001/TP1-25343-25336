@@ -15,11 +15,12 @@ export class MainMenuScene extends Phaser.Scene {
     this.load.image("logo", "./assets/logo.png");
     this.load.image("player", "./assets/player_new.png");
     this.load.audio("title_music", "./assets/shuinvy-childhood.mp3")
+    this.load.audio("ost", "assets/ost.mp3")
 
   }
 
   create() {
-    this.add.text(this.game.renderer.width / 2, 200, 'TOWER SURVIVORS', { font: '150px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
+    this.add.text(this.game.renderer.width / 2, 200, ' Stronghold Guardian', { font: '150px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     this.add.image(0, 0, "title_bg").setOrigin(0).setDepth(0);
 
     let playButton = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Start the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
@@ -52,7 +53,6 @@ export class MainMenuScene extends Phaser.Scene {
     let voltarmenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 160, '< Voltar >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     voltarmenu.setInteractive();
     voltarmenu.setVisible(false);
-
 
     playButton.on("pointerdown", () => {
       optionsButton.setVisible(false);
@@ -94,10 +94,12 @@ export class MainMenuScene extends Phaser.Scene {
     })
     alternativemode.on("pointerdown", () => {
       this.scene.launch("MainScene", {id:1});
+      this.sound.stopAll()
       this.scene.stop("MainMenuScene")
     })
     classicmode.on("pointerdown", () => {
       this.scene.launch("MainScene", {id:0});
+      this.sound.stopAll()
       this.scene.stop("MainMenuScene")
     })
 
