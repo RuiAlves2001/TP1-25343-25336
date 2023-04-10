@@ -80,11 +80,7 @@ export class UiMenu extends Phaser.Scene {
     let returnMenu = this.main_scene.add.text(this.main_scene.game.renderer.width / 2, this.main_scene.game.renderer.height / 2 - 100, '< Return to Menu >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
     returnMenu.setInteractive();
 
-<<<<<<< HEAD
-    let pausa = this.main_scene.add.text(this.main_scene.game.renderer.width / 2, this.main_scene.game.renderer.height / 2 - 220, 'PAUSE', { font: '100px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-=======
     let pausa = this.main_scene.add.text(this.main_scene.game.renderer.width / 2, this.main_scene.game.renderer.height / 2 - 220, 'PAUSA', { font: '100px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
->>>>>>> Create_menu
 
     let restartGame = this.main_scene.add.text(this.main_scene.game.renderer.width / 2, this.main_scene.game.renderer.height / 2, '< Restart the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
     restartGame.setInteractive();

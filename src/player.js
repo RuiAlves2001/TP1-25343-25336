@@ -9,20 +9,9 @@ let KEYS = {
   LEFT: Phaser.Input.Keyboard.KeyCodes.A,
   RIGHT: Phaser.Input.Keyboard.KeyCodes.D,
   ACTION: Phaser.Input.Keyboard.KeyCodes.SPACE,
-<<<<<<< HEAD
-<<<<<<< HEAD
   INCREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.X,
   DECREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.Z,
   ADD_MONEY: Phaser.Input.Keyboard.KeyCodes.M
-=======
-  TOWER: Phaser.Input.Keyboard.KeyCodes.F,
-  MENU: Phaser.Input.Keyboard.KeyCodes.T
->>>>>>> menu_principal
-=======
-  INCREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.X,
-  DECREASE_SPAWN_RATE: Phaser.Input.Keyboard.KeyCodes.Z,
-  ADD_MONEY: Phaser.Input.Keyboard.KeyCodes.M
->>>>>>> Create_menu
 }
 
 export class Player extends Physics.Arcade.Sprite {
@@ -61,26 +50,11 @@ export class Player extends Physics.Arcade.Sprite {
 
   spawn_turret(money) {
     if (Phaser.Input.Keyboard.JustDown(KEYS.ACTION)) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Create_menu
       let turret_data = get_turret(this.turret_type);
       if (money - turret_data.price >= 0) {
         let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, this.turret_type);
         return [t, money - turret_data.price]
       }
-<<<<<<< HEAD
-=======
-      let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, Math.round(0));
-      return t
-=======
->>>>>>> Create_menu
-    }
-    if (Phaser.Input.Keyboard.JustDown(KEYS.TOWER)) {
-      let t = new BaseTurret(this.scene.physics.world, this.scene, this.x, this.y, 300, true, Math.round(1));
-      return t
->>>>>>> menu_principal
     }
   }
 

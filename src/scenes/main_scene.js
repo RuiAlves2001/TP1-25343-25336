@@ -220,36 +220,17 @@ export class MainScene extends Phaser.Scene {
     this.camera_ui.visible = true
 
     this.ui_menu_group = this.add.group(); // TO BE USED IN CAMERA IGNORE SHENANIGANS
-<<<<<<< HEAD
-<<<<<<< HEAD
     let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
     this.camera.ignore(opentab);
     let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
-=======
-    this.keyT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
-
-    let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: 'bold 20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
-    let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: 'bold 20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
->>>>>>> menu_principal
-=======
-    let opentab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#1f2120' }).setOrigin(0).setVisible(true);
-    this.camera.ignore(opentab);
-    let returntab = this.add.text(20, 20, 'T - Turret Screen', { font: '20px Courier', fill: '#ffffff' }).setOrigin(0).setVisible(false).setDepth(3);
->>>>>>> Create_menu
     let creditsBackground = this.add.rectangle(
       150,
       450,
       300,
       900,
       '#4e8545',
-<<<<<<< HEAD
-      0.8
-    ).setVisible(false);
-<<<<<<< HEAD
-=======
       0.7
     ).setVisible(false);
->>>>>>> Create_menu
     const turrets = get_turrets();
 
     // ---- SIDE MENU TURRET ----
@@ -276,75 +257,6 @@ export class MainScene extends Phaser.Scene {
       'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Score: ' + this.data.get('score')
     ]);
 
-<<<<<<< HEAD
-=======
-    let pauseBackground = this.add.rectangle(
-      800,
-      450,
-      1600,
-      900,
-      '#4e8545',
-      0.7
-    ).setVisible(false); 
-    this.data.set('money', 0);
-    this.data.set('difficulty', 0);
-    this.data.set('time', 0);
-    let textinfo = this.add.text(1000, 25, 'Money: ' + this.data.get('money') + '    ' + 'Difficulty: ' + this.data.get('difficulty') + '    ' + 'Time: ' + this.data.get('time'), { font: 'bold 22px Courier', fill: '#1f2120' });
-    let turrethead = this.add.image(30, 20, "turret_head").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturrethead = this.add.text(65, 192, 'basic turrent\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
-    let turretbody = this.add.image(54, 217, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturretbody = this.add.text(65, 409, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
-    let turret_fire = this.add.image(100, 500, "turret_fire").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturret_fire = this.add.text(65, 631, 'fire turret\n100€ | 20hp | 30dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
-    let turretbody1 = this.add.image(54, 671, "turret_body").setOrigin(0).setScale(3).setVisible(false).setInteractive();
-    let textturretbody1 = this.add.text(65, 853, 'gas turrent\n200€ | 60hp | 40dm', { font: 'bold 16px Courier', fill: '#ffffff',align: 'center' }).setOrigin(0).setVisible(false).setDepth(3);
-    var keyObj = this.input.keyboard.addKey('t');  // Get key object
-    this.ui_menu_group.addMultiple([turrethead, textturrethead, turretbody, textturretbody,turret_fire, textturret_fire, turretbody1, textturretbody1, opentab, returntab, creditsBackground, textinfo])
-    keyObj.on('down', function (event) {
-      opentab.setVisible(false);
-      returntab.setVisible(true);
-      textturrethead.setVisible(true);
-      textturretbody.setVisible(true);
-      turrethead.setVisible(true);
-      turretbody.setVisible(true);
-      turrethead.setInteractive(true);
-      turretbody.setInteractive(true);
-
-      textturret_fire.setVisible(true);
-      textturretbody1.setVisible(true);
-      turret_fire.setVisible(true);
-      turretbody1.setVisible(true);
-      turret_fire.setInteractive(true);
-      turretbody1.setInteractive(true);
-      creditsBackground.setVisible(true);
-    });
-    keyObj.on('up', function (event) {
-      opentab.setVisible(true);
-      returntab.setVisible(false);
-      textturrethead.setVisible(false);
-      textturretbody.setVisible(false);
-      turrethead.setVisible(false);
-      turretbody.setVisible(false);
-      creditsBackground.setVisible(false);
-
-      textturret_fire.setVisible(false);
-      textturretbody1.setVisible(false);
-      turret_fire.setVisible(false);
-      turretbody1.setVisible(false);
-      turret_fire.setInteractive(false);
-      turretbody1.setInteractive(false);
-      creditsBackground.setVisible(false);
-    });
-    
-    turrethead.on("pointerdown", () => {
-      console.log("testecefw")
-      textturrethead.setColor('#95ff00')
-    });
-   
-    
->>>>>>> menu_principal
-=======
->>>>>>> Create_menu
     //this.i=0;
 
     // let hoverSprite = this.add.sprite(100, 100, "player").setScale(1).setDepth(5);
@@ -358,110 +270,15 @@ export class MainScene extends Phaser.Scene {
 
     let pause_label = this.add.image(this.game.renderer.width - 75, 10, "btn_pause").setOrigin(0).setDepth(3).setScale(0.1);
     pause_label.setInteractive();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-    let returnMenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 100, '< Return to Menu >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-    returnMenu.setInteractive();
-
-    let pausa = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 - 220, 'PAUSA', { font: '100px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-
-    let restartGame = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Restart the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-    restartGame.setInteractive();
-
-    let choiseLabel = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, '< Click to return to the game >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(2);
-    choiseLabel.setInteractive();
-
-    this.ui_menu_group.addMultiple([hoverSprite, pause_label,pauseBackground, returnMenu, pausa, restartGame, choiseLabel])
-
-    // Code for the pause menu
-
-    let list = [choiseLabel, returnMenu, restartGame, pausa];
-    list.forEach(unpause => {
-      unpause.setVisible(false);
-      unpause.setActive(false);
-    });
-
->>>>>>> menu_principal
-=======
->>>>>>> Create_menu
     pause_label.on("pointerdown", () => {
       if (gameIsPaused == false) {
         this.scene.pause();
         this.scene.launch('PauseScene');
         gameIsPaused = true;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Create_menu
         // sd
       }
     });
     this.camera.ignore(pause_label)
-<<<<<<< HEAD
-=======
-        list.forEach(unpause => {
-          pauseBackground.setVisible(true);
-          unpause.setVisible(true);
-          unpause.setActive(true);
-        })
-      }
-    });
-
-    choiseLabel.on("pointerdown", () => {
-
-      if (gameIsPaused == true) {
-        gameIsPaused = false;
-        list.forEach(unpause => {
-          pauseBackground.setVisible(false);
-          unpause.setVisible(false);
-          unpause.setActive(false);
-        })
-      }
-    });
-
-    choiseLabel.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = choiseLabel.x - choiseLabel.width;
-      hoverSprite.y = choiseLabel.y;
-    })
-    choiseLabel.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
-
-    returnMenu.on("pointerdown", () => {
-      //inserir return menu
-    });
-
-    returnMenu.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = returnMenu.x - returnMenu.width;
-      hoverSprite.y = returnMenu.y;
-    })
-    returnMenu.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
-
-    restartGame.on("pointerdown", () => {
-      this.scene.restart();
-    });
-
-    restartGame.on("pointerover", () => {
-      hoverSprite.setVisible(true);
-      hoverSprite.play("walk");
-      hoverSprite.x = restartGame.x - restartGame.width;
-      hoverSprite.y = restartGame.y;
-    })
-    restartGame.on("pointerout", () => {
-      hoverSprite.setVisible(false);
-    })
-
->>>>>>> menu_principal
-=======
->>>>>>> Create_menu
     this.camera.ignore(this.ui_menu_group)
     // ---- END OF UI ----
 
