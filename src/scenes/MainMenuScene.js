@@ -45,11 +45,11 @@ export class MainMenuScene extends Phaser.Scene {
     alternativemode.setInteractive();
     alternativemode.setVisible(false);
 
-    let musicmode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 80, '< Musica ligada: On >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
+    let musicmode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 80, '< Music: On >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     musicmode.setInteractive();
     musicmode.setVisible(false);
 
-    let voltarmenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 160, '< Voltar >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
+    let voltarmenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 160, '< Return >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     voltarmenu.setInteractive();
     voltarmenu.setVisible(false);
 
@@ -162,13 +162,13 @@ export class MainMenuScene extends Phaser.Scene {
     let musictocar = this.sound.play("title_music");
     musicmode.on("pointerdown", () => {
       if(musictocar == true){
-        musicmode.setText('< Musica ligada: Off >');
+        musicmode.setText('< Music: Off >');
         musictocar = false;
         this.sound.pauseAll("title_music");
         }else {
           
           musictocar = true;
-          musicmode.setText('< Musica ligada: On >');
+          musicmode.setText('< Music: On >');
           this.sound.play("title_music");
         }
     });
