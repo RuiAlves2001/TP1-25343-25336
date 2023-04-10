@@ -28,7 +28,9 @@ export class GameOver extends Phaser.Scene {
 
     tryagainGame.on("pointerdown", () => {
       console.log("restart")
+      this.scene.stop("MainScene");
       this.scene.start("MainScene");
+      this.scene.stop(this)
     });
 
     tryagainGame.on("pointerover", () => {
@@ -45,7 +47,9 @@ export class GameOver extends Phaser.Scene {
     choiseLabel.setInteractive();
 
     choiseLabel.on("pointerdown", () => {
+      this.scene.stop("MainScene");
       this.scene.launch("MainMenuScene")
+      this.scene.stop(this)
     });
 
     choiseLabel.on("pointerover", () => {

@@ -22,7 +22,7 @@ export class SideScene extends Phaser.Scene {
       300,
       900,
       '#4e8545',
-      1
+      0.7
     );
 
     let text_padding_left = 20

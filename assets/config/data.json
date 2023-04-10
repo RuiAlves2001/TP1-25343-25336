@@ -96,7 +96,7 @@
       "name": "Kill me Camper",
       "top_sprite": "sniper",
       "bottom_sprite": "turret_body",
-      "fire_rate": 200,
+      "fire_rate": 80,
       "energy":1000,
       "base_bullet":3,
       "range": 800,

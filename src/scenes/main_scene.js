@@ -70,7 +70,7 @@ export class MainScene extends Phaser.Scene {
 
   init(data) {
     console.log(data)
-
+    this.is_mute = data.mute
     switch (data.id) {
       case 0:
         MODE = MODES.Classic
@@ -86,8 +86,15 @@ export class MainScene extends Phaser.Scene {
     this.currently_selected_tower = 0;
     this.t = 0;
     ENEMIE_SPAWN_TIMER = 50
-    let ost = this.sound.play("ost");
+    this.sound.stopAll();
+    let ost = this.sound.add("ost");
+
+    if(this.is_mute) {
+      ost.mute = true
+    } 
     this.sound.volume = 0.2    
+    ost.loop = true
+    ost.play()
 
     // ------ BACKGROUND / MAP RELATED ------
     this.map = this.make.tilemap({ tileWidth: 64, tileHeight: 64, width: 512, height: 64 });
@@ -117,6 +124,12 @@ export class MainScene extends Phaser.Scene {
       }
       this.player.set_tower(this.currently_selected_tower)
       this.scene_info.x = 50
+    })
+
+    this.events.on("restart", () => {
+      ost.stop()
+      ost.shutdown()
+      ost.play()
     })
 
     // this.ui_left_tab_menu = new UiMenu(this);
@@ -181,7 +194,7 @@ export class MainScene extends Phaser.Scene {
       // this.camera.setViewport(this.castle.x - this.window.width, this.castle.y - this.window.height, this.window.width, this.window.height)
       //this.camera.setPosition(this.castle.x, this.castle.y);
     } else {
-      this.input.manager.canvas.style.cursor = "none";
+      // this.input.manager.canvas.style.cursor = "none";
       this.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
         if ((this.camera.zoom + deltaY * 0.001 >= MIN_SCROLL) && (this.camera.zoom + deltaY * 0.001 <= MAX_SCROLL)) {
           this.camera.zoom += deltaY * 0.001
@@ -292,7 +305,7 @@ export class MainScene extends Phaser.Scene {
 
     this.castle_health = new HealthBar(this, 32 * 32 - 32, 32 * 32 + 32, 124);
     if(MODE === MODES.Classic ) {
-      this.castle_health = new HealthBar(this, this.window.width/2, this.window.height/2+256, 124);
+      this.castle_health = new HealthBar(this, 368, 252, 124);
       console.log(this.castle_health)
     }
 
@@ -302,7 +315,7 @@ export class MainScene extends Phaser.Scene {
     this.t += 1;
     this.data.set('enemies', this.enemies_group.getLength());
     this.scene_info.setText([
-      'Spawn Rate:' + ENEMIE_SPAWN_TIMER,
+      'Spawn Rate:' + Math.round(ENEMIE_SPAWN_TIMER),
       'Nº Enemies: ' + this.data.get('enemies')
     ])
     if (MODE === MODES.RunNGun) {
@@ -366,8 +379,8 @@ export class MainScene extends Phaser.Scene {
 
     this.enemie_creation_timer++
     if (this.enemie_creation_timer > Math.random() * ENEMIE_SPAWN_TIMER) {
-      ENEMIE_SPAWN_TIMER -= Math.min(ENEMIE_SPAWN_TIMER, 0.02);
-      ENEMIE_SPAWN_TIMER = Math.max(ENEMIE_SPAWN_TIMER, 1);
+      ENEMIE_SPAWN_TIMER -= Math.min(ENEMIE_SPAWN_TIMER, 0.1);
+      ENEMIE_SPAWN_TIMER = Math.max(ENEMIE_SPAWN_TIMER, 2);
       this.enemies_amount++
       let position = {};
 
@@ -392,7 +405,7 @@ export class MainScene extends Phaser.Scene {
 
       const enemie_id = (Math.round(Math.random() * 10) === 1) ? { name: "boss", life: 5 } : { name: "slime", life: 2 }
       const enemie = new Enemie(this, position['x'], position['y'], enemie_id.life, this.castle, "", enemie_id.name);
-      this.physics.moveToObject(enemie, this.castle, Math.random() * 200);
+      this.physics.moveToObject(enemie, this.castle, (Math.random() * 120) + 10);
       this.enemie_creation_timer -= ENEMIE_SPAWN_TIMER * 2;
       this.enemies_group.add(enemie);
       let collider = this.physics.add.overlap(enemie, this.castle, function (action) {
@@ -405,7 +418,7 @@ export class MainScene extends Phaser.Scene {
         if (this.health <= 0) {
           console.log(this.health);
           this.scene.launch("GameOver");
-          this.scene.stop("MainScene")
+          this.scene.pause("MainScene")
         }
         enemie.destroy();
 
@@ -417,7 +430,7 @@ export class MainScene extends Phaser.Scene {
     // -----------------------
     if (TIME_REMAINING - this.t <= 0) {
       this.scene.launch("wingame");
-      this.scene.stop("MainScene");
+      this.scene.pause("MainScene");
     }
     this.data.set("money", this.money)
     this.data.set("time", TIME_REMAINING - this.t)

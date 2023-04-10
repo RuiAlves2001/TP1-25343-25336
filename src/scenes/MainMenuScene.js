@@ -20,6 +20,8 @@ export class MainMenuScene extends Phaser.Scene {
   }
 
   create() {
+    this.sound.stopAll()
+
     this.add.text(this.game.renderer.width / 2, 200, ' Stronghold Guardian', { font: '150px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     this.add.image(0, 0, "title_bg").setOrigin(0).setDepth(0);
 
@@ -38,19 +40,19 @@ export class MainMenuScene extends Phaser.Scene {
     let hoverSprite = this.add.sprite(100, 100, "player").setScale(1);
     hoverSprite.setVisible(false);
 
-    let classicmode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Modo classico >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
+    let classicmode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2, '< Classic Mode >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     classicmode.setInteractive();
     classicmode.setVisible(false);
 
-    let alternativemode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 80, '< Modo Alternativo >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
+    let alternativemode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 80, '< Alternative Mode >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     alternativemode.setInteractive();
     alternativemode.setVisible(false);
 
-    let musicmode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 80, '< Musica ligada: On >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
+    let musicmode = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 80, '< Music: On >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     musicmode.setInteractive();
     musicmode.setVisible(false);
 
-    let voltarmenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 160, '< Voltar >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
+    let voltarmenu = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 160, '< Back >', { font: '30px Arial', fill: '#fff' }).setOrigin(0.5).setDepth(1);
     voltarmenu.setInteractive();
     voltarmenu.setVisible(false);
 
@@ -93,12 +95,12 @@ export class MainMenuScene extends Phaser.Scene {
       hoverSprite.setVisible(false);
     })
     alternativemode.on("pointerdown", () => {
-      this.scene.launch("MainScene", {id:1});
+      this.scene.launch("MainScene", {id:1, mute: !musictocar});
       this.sound.stopAll()
       this.scene.stop("MainMenuScene")
     })
     classicmode.on("pointerdown", () => {
-      this.scene.launch("MainScene", {id:0});
+      this.scene.launch("MainScene", {id:0, mute: !musictocar});
       this.sound.stopAll()
       this.scene.stop("MainMenuScene")
     })
@@ -172,13 +174,13 @@ export class MainMenuScene extends Phaser.Scene {
     let musictocar = this.sound.play("title_music");
     musicmode.on("pointerdown", () => {
       if (musictocar == true) {
-        musicmode.setText('< Musica ligada: Off >');
+        musicmode.setText('< Music: Off >');
         musictocar = false;
         this.sound.pauseAll("title_music");
       } else {
 
         musictocar = true;
-        musicmode.setText('< Musica ligada: On >');
+        musicmode.setText('< Music: On >');
         this.sound.play("title_music");
       }
     });
